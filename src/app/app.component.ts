@@ -8,5 +8,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'whats-for-dinner';
+  title = 'Whats for dinner?';
+  description = 'A simple app to help you decide what to eat for dinner.';
 }
