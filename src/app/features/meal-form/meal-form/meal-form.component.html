@@ -1,1 +1,39 @@
-<p>meal-form works!</p>
+<form [formGroup]="mealForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="timeAvailable">Time Available:</label>
+    <select id="timeAvailable" formControlName="timeAvailable">
+      <!-- will suggest ordering takeout, give restraunt suggestions based on location-->
+      <option value="">Select an option</option>
+      <option value="5">5 minutes</option>
+      <option value="15">15 minutes</option>
+      <option value="30">30 minutes</option>
+      <option value="45">45 minutes</option>
+      <option value="60">1 hour</option>
+    </select>
+  </div>
+  <div>
+    <label for="ingredients">Ingredients:</label>
+    <textarea id="ingredients" formControlName="ingredients" rows="4"></textarea>
+  </div>
+  <div>
+    <label>Dietary Restrictions:</label>
+    <div formGroupName="dietaryRestrictions">
+      <label> <input type="checkbox" formControlName="glutenFree" /> Gluten Free </label>
+      <label> <input type="checkbox" formControlName="dairyFree" /> Dairy Free </label>
+      <label> <input type="checkbox" formControlName="vegetarian" /> Vegetarian </label>
+      <label> <input type="checkbox" formControlName="peanutAllergy" /> Peanut Allergy </label>
+      <label> <input type="checkbox" formControlName="other" /> Other </label>
+      <div *ngIf="mealForm.get('dietaryRestrictions.other')?.value">
+        <input
+          type="text"
+          formControlName="otherRestriction"
+          placeholder="Please specify your dietary restriction"
+        />
+      </div>
+    </div>
+  </div>
+  <div>
+    <label> <input type="checkbox" formControlName="pickyEaters" /> Picky Eaters </label>
+  </div>
+  <button type="submit" [disabled]="!mealForm.valid">Submit</button>
+</form>
