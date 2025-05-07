@@ -3,6 +3,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class MealDataService {
-  title = 'Whats for dinner?';
-  description = 'A simple app to help you decide what to eat for dinner.';
+  title = "What's for dinner?";
+  description = "A simple app to help you decide what to eat for dinner.";
 }

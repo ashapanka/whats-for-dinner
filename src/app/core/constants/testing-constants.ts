@@ -8,7 +8,7 @@
 
 export const TestingConstants = {
   // Application general
-  APP_TITLE: 'Whats for dinner?',
+  APP_TITLE: "What's for dinner?",
   APP_DESCRIPTION: 'A simple app to help you decide what to eat for dinner.',
 
   // Form labels
