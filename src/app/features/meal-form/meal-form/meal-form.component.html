@@ -1,39 +1,76 @@
-<form [formGroup]="mealForm" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="timeAvailable">Time Available:</label>
-    <select id="timeAvailable" formControlName="timeAvailable">
-      <!-- will suggest ordering takeout, give restraunt suggestions based on location-->
-      <option value="">Select an option</option>
-      <option value="5">5 minutes</option>
-      <option value="15">15 minutes</option>
-      <option value="30">30 minutes</option>
-      <option value="45">45 minutes</option>
-      <option value="60">1 hour</option>
-    </select>
-  </div>
-  <div>
-    <label for="ingredients">Ingredients:</label>
-    <textarea id="ingredients" formControlName="ingredients" rows="4"></textarea>
-  </div>
-  <div>
-    <label>Dietary Restrictions:</label>
-    <div formGroupName="dietaryRestrictions">
-      <label> <input type="checkbox" formControlName="glutenFree" /> Gluten Free </label>
-      <label> <input type="checkbox" formControlName="dairyFree" /> Dairy Free </label>
-      <label> <input type="checkbox" formControlName="vegetarian" /> Vegetarian </label>
-      <label> <input type="checkbox" formControlName="peanutAllergy" /> Peanut Allergy </label>
-      <label> <input type="checkbox" formControlName="other" /> Other </label>
-      <div *ngIf="mealForm.get('dietaryRestrictions.other')?.value">
-        <input
-          type="text"
-          formControlName="otherRestriction"
-          placeholder="Please specify your dietary restriction"
-        />
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ mealData.title }}</mat-card-title>
+    <mat-card-subtitle>{{ mealData.description }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="mealForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill">
+        <mat-label>Time Available</mat-label>
+        <mat-select formControlName="timeAvailable">
+          <mat-option value="">Select an option</mat-option>
+          <!-- if user choose 5 minutes, rather than displaying a list of meals, display a message saying "Order takeout". Give them restaurant suggestions based on location -->
+          <mat-option value="5">5 minutes</mat-option>
+          <mat-option value="15">15 minutes</mat-option>
+          <mat-option value="30">30 minutes</mat-option>
+          <mat-option value="45">45 minutes</mat-option>
+          <mat-option value="60">1 hour</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Ingredients</mat-label>
+        <textarea
+          matInput
+          formControlName="ingredients"
+          rows="4"
+          placeholder="List ingredients separated by commas"
+        ></textarea>
+      </mat-form-field>
+
+      <div>
+        <h3>Dietary Restrictions</h3>
+        <div formGroupName="dietaryRestrictions">
+          <section>
+            <mat-checkbox formControlName="glutenFree">Gluten Free</mat-checkbox>
+          </section>
+          <section>
+            <mat-checkbox formControlName="dairyFree">Dairy Free</mat-checkbox>
+          </section>
+          <section>
+            <mat-checkbox formControlName="vegetarian">Vegetarian</mat-checkbox>
+          </section>
+          <section>
+            <mat-checkbox formControlName="peanutAllergy">Peanut Allergy</mat-checkbox>
+          </section>
+          <section>
+            <mat-checkbox formControlName="other">Other</mat-checkbox>
+          </section>
+
+          <mat-form-field
+            *ngIf="mealForm.get('dietaryRestrictions.other')?.value"
+            appearance="fill"
+          >
+            <mat-label>Specify Restriction</mat-label>
+            <input
+              matInput
+              formControlName="otherRestriction"
+              placeholder="Please specify your dietary restriction"
+            />
+          </mat-form-field>
+        </div>
       </div>
-    </div>
-  </div>
-  <div>
-    <label> <input type="checkbox" formControlName="pickyEaters" /> Picky Eaters </label>
-  </div>
-  <button type="submit" [disabled]="!mealForm.valid">Submit</button>
-</form>
+
+      <section>
+        <mat-checkbox formControlName="pickyEaters">Picky Eaters</mat-checkbox>
+      </section>
+
+      <mat-card-actions align="end">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!mealForm.valid">
+          Submit
+        </button>
+      </mat-card-actions>
+    </form>
+  </mat-card-content>
+</mat-card>

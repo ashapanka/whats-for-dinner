@@ -2,11 +2,31 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MealDataService } from '../../../core/services/meal-data.service';
+
+// Import Material modules
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-meal-form',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckboxModule,
+    MatButtonModule,
+  ],
   templateUrl: './meal-form.component.html',
   styleUrl: './meal-form.component.scss',
 })
@@ -16,7 +36,9 @@ export class MealFormComponent {
   constructor(
     private router: Router,
     private fb: FormBuilder,
+    public mealData: MealDataService,
   ) {
+    // Initialize the form
     this.mealForm = this.fb.group({
       timeAvailable: [''],
       ingredients: [''],
@@ -29,6 +51,11 @@ export class MealFormComponent {
       }),
       otherRestriction: [''],
       pickyEaters: [false],
+    });
+
+    //for testing
+    this.mealForm.valueChanges.subscribe((value) => {
+      console.log(value);
     });
   }
 
