@@ -2,6 +2,31 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
 
+## Setup for Development
+
+This project uses OpenAI's API for generating meal suggestions. To run it locally:
+
+1. Copy the environment template:
+   ```
+   cp src/environments/environment.template.ts src/environments/environment.ts
+   ```
+
+2. Add your OpenAI API key to the environment.ts file:
+   ```typescript
+   export const environment = {
+     production: false,
+     llmApiUrl: 'https://api.openai.com/v1/chat/completions',
+     llmApiKey: 'YOUR_ACTUAL_API_KEY_HERE',
+   };
+   ```
+
+3. Start the development server:
+   ```
+   ng serve
+   ```
+
+> **Note**: The environment.ts file is excluded from git to keep API keys secure.
+
 ## Development server
 
 To start a local development server, run:
