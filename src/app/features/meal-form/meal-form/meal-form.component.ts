@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MealDataService } from '../../../core/services/meal-data.service';
 
@@ -40,8 +40,9 @@ export class MealFormComponent {
   ) {
     // Initialize the form
     this.mealForm = this.fb.group({
-      timeAvailable: [''],
-      ingredients: [''],
+      timeAvailable: ['', Validators.required],
+      numberOfPeople: [null, [Validators.required, Validators.min(1)]],
+      ingredients: ['', Validators.required],
       dietaryRestrictions: this.fb.group({
         glutenFree: [false],
         dairyFree: [false],

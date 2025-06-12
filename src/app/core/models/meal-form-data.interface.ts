@@ -3,6 +3,7 @@
  */
 export interface MealFormData {
   timeAvailable: string;
+  numberOfPeople: number;
   ingredients: string[];
   dietaryRestrictions?: {
     glutenFree: boolean;

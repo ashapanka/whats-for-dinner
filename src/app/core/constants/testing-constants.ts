@@ -14,6 +14,7 @@ export const TestingConstants = {
   // Form labels
   FORM: {
     TIME_AVAILABLE_LABEL: 'Time Available',
+    NUMBER_OF_PEOPLE_LABEL: 'Number of People',
     INGREDIENTS_LABEL: 'Ingredients',
     INGREDIENTS_PLACEHOLDER: 'List ingredients separated by commas',
     DIETARY_RESTRICTIONS_LABEL: 'Dietary Restrictions',
