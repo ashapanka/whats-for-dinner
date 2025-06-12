@@ -5,8 +5,21 @@
   </mat-card-header>
 
   <mat-card-content>
-    <!-- Result content will go here -->
-    <p>Here's your meal suggestion based on your inputs.</p>
+    <!-- <p *ngIf="mealData.preparationTime + mealData.cookTime === '5'">
+      Order takeout from a local restaurant!
+    </p> -->
+    <p>Here are some meal suggestions based on your inputs...</p>
+
+    <!--  add a placeholder recipe, will replace with LLM AI response -->
+    <p class="name">Name: spaghetti dish</p>
+    <p class="description">Description: A classic Italian pasta dish with a rich tomato sauce.</p>
+    <p class="ingredients">Ingredients: spaghetti, tomato sauce, garlic, basil</p>
+    <p class="preparationTime">Preparation Time: 30 minutes</p>
+    <p class="cookingTime">Cooking Time: 15 minutes</p>
+    <p class="instructions">
+      Instructions: Boil spaghetti, prepare sauce, mix together, and serve.
+    </p>
+    <p class="pickyEaterTip">Picky eater tip: add sprinkles</p>
   </mat-card-content>
 
   <mat-card-actions>
