@@ -5,8 +5,9 @@ export interface MealSuggestion {
   name: string;
   description: string;
   ingredients: string[];
-  preparationTime: string;
-  cookTime: string;
-  instructions: string[];
+  preparationSteps: string[];
+  cookingTime: string;
   pickyEaterTips?: string;
+  rawResponse?: string; // For fallback/debugging
 }
+
