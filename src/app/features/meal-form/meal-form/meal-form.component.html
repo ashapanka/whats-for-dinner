@@ -1,7 +1,7 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ mealData.title }}</mat-card-title>
-    <mat-card-subtitle>{{ mealData.description }}</mat-card-subtitle>
+    <mat-card-title>{{ sharedDataService.title }}</mat-card-title>
+    <mat-card-subtitle>{{ sharedDataService.description }}</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
@@ -19,14 +19,15 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="fill"> 
+      <mat-form-field appearance="fill">
         <mat-label>Number of people</mat-label>
         <input
           matInput
           type="number"
           formControlName="numberOfPeople"
           placeholder="Enter number of people"
-          min="1">
+          min="1"
+        />
       </mat-form-field>
 
       <mat-form-field appearance="fill">

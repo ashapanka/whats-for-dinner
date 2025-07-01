@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MealDataService } from '../../../core/services/meal-data.service';
 
 // Import Material modules
 import { MatCardModule } from '@angular/material/card';
@@ -12,6 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
+import { SharedDataService } from '../../../core/services/shared-data.service';
 
 @Component({
   selector: 'app-meal-form',
@@ -36,7 +36,7 @@ export class MealFormComponent {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    public mealData: MealDataService,
+    public sharedDataService: SharedDataService,
   ) {
     // Initialize the form
     this.mealForm = this.fb.group({
@@ -61,8 +61,55 @@ export class MealFormComponent {
   }
 
   onSubmit() {
-    // Process form data here
-    // Then navigate to results
-    this.router.navigate(['/meal-result']);
+    if (this.mealForm.valid) {
+      // Store the form data
+      this.sharedDataService.mealFormData = this.mealForm.value;
+      
+      // Create a prompt based on the form data
+      this.createMealPrompt();
+      
+      // Navigate to results page
+      this.router.navigate(['/meal-result']);
+    }
+  }
+
+  private createMealPrompt() {
+    const formData = this.mealForm.value;
+    
+    // Build dietary restrictions string
+    let dietaryRestrictions = '';
+    if (formData.dietaryRestrictions) {
+      if (formData.dietaryRestrictions.glutenFree) dietaryRestrictions += 'gluten-free, ';
+      if (formData.dietaryRestrictions.dairyFree) dietaryRestrictions += 'dairy-free, ';
+      if (formData.dietaryRestrictions.vegetarian) dietaryRestrictions += 'vegetarian, ';
+      if (formData.dietaryRestrictions.peanutAllergy) dietaryRestrictions += 'no peanuts, ';
+      if (formData.dietaryRestrictions.other && formData.otherRestriction) {
+        dietaryRestrictions += formData.otherRestriction + ', ';
+      }
+    }
+    
+    // Remove trailing comma and space if present
+    dietaryRestrictions = dietaryRestrictions.replace(/, $/, '');
+    
+    // Create the prompt with JSON structure request
+    const prompt = `Suggest a dinner recipe that:
+- Takes about ${formData.timeAvailable} minutes to prepare
+- Serves ${formData.numberOfPeople} people
+- Uses some of these ingredients: ${formData.ingredients}
+${dietaryRestrictions ? '- Accommodates these dietary restrictions: ' + dietaryRestrictions : ''}
+${formData.pickyEaters ? '- Include tips for picky eaters' : ''}
+
+Please return your response in the following JSON format:
+{
+  "name": "Recipe Name",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2", "..."],
+  "preparationSteps": ["step 1", "step 2", "..."],
+  "cookingTime": "Total cooking time",
+  ${formData.pickyEaters ? '"pickyEaterTips": "Tips for picky eaters"' : ''}
+}`;
+
+    // Store the prompt in the shared service
+    this.sharedDataService.mealPrompt = prompt;
   }
 }
