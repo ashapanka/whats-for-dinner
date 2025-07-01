@@ -1,1 +1,16 @@
 @import './../../../shared/shared-styles.scss';
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.suggestion-container {
+  white-space: pre-line;
+  margin: 20px 0;
+}
+
+mat-spinner {
+  margin: 20px auto;
+}
