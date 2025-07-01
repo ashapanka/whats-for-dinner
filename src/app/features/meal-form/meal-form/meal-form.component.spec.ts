@@ -236,9 +236,9 @@ describe('MealFormComponent', () => {
           dairyFree: false,
           vegetarian: false,
           peanutAllergy: false,
-          other: true
+          other: true,
+          otherRestriction: 'shellfish allergy', // Updated to match new structure
         },
-        otherRestriction: 'shellfish allergy',
         pickyEaters: false
       });
 
@@ -247,7 +247,59 @@ describe('MealFormComponent', () => {
 
       // Assert
       expect(sharedDataService.mealPrompt).toContain('dietary restrictions');
-      expect(sharedDataService.mealPrompt).toContain('shellfish allergy');
+      expect(sharedDataService.mealPrompt).toContain('no shellfish allergy'); // Updated to match new format
+    });
+
+    it('should include other dietary restrictions with "no" prefix when specified', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice, broccoli',
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: true,
+          otherRestriction: 'eggs',
+        },
+        pickyEaters: false
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('dietary restrictions');
+      expect(sharedDataService.mealPrompt).toContain('no eggs');
+      expect(sharedDataService.mealPrompt).toContain('IMPORTANT: If "no eggs" or similar restriction is specified');
+    });
+
+    it('should include explicit warning about excluded ingredients', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice, broccoli',
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: true,
+          otherRestriction: 'shellfish',
+        },
+        pickyEaters: false
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('IMPORTANT:');
+      expect(sharedDataService.mealPrompt).toContain('DO NOT include');
+      expect(sharedDataService.mealPrompt).toContain('no shellfish');
     });
   });
 

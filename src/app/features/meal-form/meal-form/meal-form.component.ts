@@ -49,8 +49,8 @@ export class MealFormComponent {
         vegetarian: [false],
         peanutAllergy: [false],
         other: [false],
+        otherRestriction: [''], 
       }),
-      otherRestriction: [''],
       pickyEaters: [false],
     });
 
@@ -83,8 +83,8 @@ export class MealFormComponent {
       if (formData.dietaryRestrictions.dairyFree) dietaryRestrictions += 'dairy-free, ';
       if (formData.dietaryRestrictions.vegetarian) dietaryRestrictions += 'vegetarian, ';
       if (formData.dietaryRestrictions.peanutAllergy) dietaryRestrictions += 'no peanuts, ';
-      if (formData.dietaryRestrictions.other && formData.otherRestriction) {
-        dietaryRestrictions += formData.otherRestriction + ', ';
+      if (formData.dietaryRestrictions.other && formData.dietaryRestrictions.otherRestriction.trim()) {
+        dietaryRestrictions += 'no ' + formData.dietaryRestrictions.otherRestriction.trim() + ', ';
       }
     }
     
@@ -98,6 +98,8 @@ export class MealFormComponent {
 - Uses some of these ingredients: ${formData.ingredients}
 ${dietaryRestrictions ? '- Accommodates these dietary restrictions: ' + dietaryRestrictions : ''}
 ${formData.pickyEaters ? '- Include tips for picky eaters' : ''}
+
+IMPORTANT: If "no eggs" or similar restriction is specified, DO NOT include eggs or that ingredient in any form in the recipe.
 
 Please return your response in the following JSON format:
 {

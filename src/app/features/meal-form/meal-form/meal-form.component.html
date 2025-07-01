@@ -56,18 +56,18 @@
             <mat-checkbox formControlName="peanutAllergy">Peanut Allergy</mat-checkbox>
           </section>
           <section>
-            <mat-checkbox formControlName="other">Other</mat-checkbox>
+            <mat-checkbox formControlName="other">Other Restriction</mat-checkbox>
           </section>
 
           <mat-form-field
             *ngIf="mealForm.get('dietaryRestrictions.other')?.value"
             appearance="fill"
           >
-            <mat-label>Specify Restriction</mat-label>
+            <mat-label>Ingredient to Exclude</mat-label>
             <input
               matInput
               formControlName="otherRestriction"
-              placeholder="Please specify your dietary restriction"
+              placeholder="Enter ingredient to avoid (e.g., eggs, shellfish)"
             />
           </mat-form-field>
         </div>
