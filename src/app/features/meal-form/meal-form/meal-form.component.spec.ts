@@ -1,20 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MealFormComponent } from './meal-form.component';
+import { SharedDataService } from '../../../core/services/shared-data.service';
 
 describe('MealFormComponent', () => {
   let component: MealFormComponent;
   let fixture: ComponentFixture<MealFormComponent>;
+  let router: jasmine.SpyObj<Router>;
+  let sharedDataService: SharedDataService;
 
   beforeEach(async () => {
+    // Create a spy object for Router with a navigate spy method
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+    
     await TestBed.configureTestingModule({
-      imports: [MealFormComponent],
+      imports: [
+        MealFormComponent,
+        ReactiveFormsModule,
+        NoopAnimationsModule
+      ],
+      providers: [
+        SharedDataService,
+        { provide: Router, useValue: routerSpy }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MealFormComponent);
     component = fixture.componentInstance;
+    router = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    sharedDataService = TestBed.inject(SharedDataService);
     fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 
   it('should display form', () => {
@@ -68,9 +89,6 @@ describe('MealFormComponent', () => {
     component.onSubmit();
 
     // Expect the form to not navigate since it is invalid
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-
     expect(router.navigate).not.toHaveBeenCalled();
 
     // Check that the submit button is still disabled
@@ -99,10 +117,6 @@ describe('MealFormComponent', () => {
     fixture.detectChanges();
     expect(submitButton.disabled).toBeFalse();
 
-    // Spy on the router navigate method
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate');
-
     // Simulate form submission
     component.onSubmit();
 
@@ -110,9 +124,6 @@ describe('MealFormComponent', () => {
   });
 
   it('should display meal-result component after submission', () => {
-    const router = TestBed.inject(Router);
-    spyOn(router, 'navigate').and.callThrough();
-
     // Fill out the form with valid data
     component.mealForm.patchValue({
       timeAvailable: '30 minutes',
@@ -136,7 +147,140 @@ describe('MealFormComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/meal-result']);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('createMealPrompt', () => {
+    it('should create a basic prompt with required fields', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice, broccoli',
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false
+        },
+        pickyEaters: false
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('Takes about 30 minutes');
+      expect(sharedDataService.mealPrompt).toContain('Serves 4 people');
+      expect(sharedDataService.mealPrompt).toContain('chicken, rice, broccoli');
+      expect(sharedDataService.mealPrompt).toContain('JSON format');
+      expect(sharedDataService.mealPrompt).not.toContain('dietary restrictions');
+      expect(sharedDataService.mealPrompt).not.toContain('picky eaters');
+    });
+
+    it('should include dietary restrictions when selected', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice, broccoli',
+        dietaryRestrictions: {
+          glutenFree: true,
+          dairyFree: true,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false
+        },
+        pickyEaters: false
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('dietary restrictions');
+      expect(sharedDataService.mealPrompt).toContain('gluten-free');
+      expect(sharedDataService.mealPrompt).toContain('dairy-free');
+    });
+
+    it('should include picky eater tips when selected', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice, broccoli',
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false
+        },
+        pickyEaters: true
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('picky eaters');
+      expect(sharedDataService.mealPrompt).toContain('"pickyEaterTips"');
+    });
+
+    it('should include other dietary restrictions when specified', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice, broccoli',
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: true
+        },
+        otherRestriction: 'shellfish allergy',
+        pickyEaters: false
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('dietary restrictions');
+      expect(sharedDataService.mealPrompt).toContain('shellfish allergy');
+    });
+  });
+
+  it('should navigate to meal-result on valid form submission', () => {
+    // Arrange
+    component.mealForm.patchValue({
+      timeAvailable: '30',
+      numberOfPeople: 4,
+      ingredients: 'chicken, rice, broccoli',
+      dietaryRestrictions: {
+        glutenFree: false,
+        dairyFree: false,
+        vegetarian: false,
+        peanutAllergy: false,
+        other: false
+      },
+      pickyEaters: false
+    });
+
+    // Act
+    component.onSubmit();
+
+    // Assert
+    expect(router.navigate).toHaveBeenCalledWith(['/meal-result']);
+  });
+
+  it('should not navigate on invalid form submission', () => {
+    // Arrange - form is invalid by default
+
+    // Act
+    component.onSubmit();
+
+    // Assert
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });
