@@ -16,28 +16,28 @@
 
     <div *ngIf="suggestion" class="suggestion-container">
       <h2 class="name">{{ suggestion.name }}</h2>
-      
+
       <h3>Description</h3>
       <p class="description">{{ suggestion.description }}</p>
-      
+
       <h3>Ingredients</h3>
       <ul class="ingredients">
         <li *ngFor="let ingredient of suggestion.ingredients">{{ ingredient }}</li>
       </ul>
-      
+
       <h3>Preparation Steps</h3>
       <ol class="preparation-steps">
         <li *ngFor="let step of suggestion.preparationSteps">{{ step }}</li>
       </ol>
-      
+
       <h3>Cooking Time</h3>
       <p class="cookingTime">{{ suggestion.cookingTime }}</p>
-      
+
       <div *ngIf="suggestion.pickyEaterTips" class="picky-eater-section">
         <h3>Tips for Picky Eaters</h3>
         <p class="pickyEaterTip">{{ suggestion.pickyEaterTips }}</p>
       </div>
-      
+
       <!-- Fallback for raw response if parsing failed -->
       <div *ngIf="suggestion.rawResponse" class="raw-response">
         <p>{{ suggestion.rawResponse }}</p>
@@ -47,6 +47,5 @@
 
   <mat-card-actions>
     <button mat-button (click)="backToForm()">Back to Form</button>
-    <button mat-button (click)="regenerateSuggestion()" [disabled]="isLoading">Try Another Recipe</button>
   </mat-card-actions>
 </mat-card>

@@ -20,7 +20,7 @@ describe('MealResultComponent', () => {
   let llmGroqServiceSpy: jasmine.SpyObj<LLMGROQService>;
   let sharedDataService: SharedDataService;
   let router: Router;
-  
+
   // Mock meal suggestion data
   const mockMealSuggestion: MealSuggestion = {
     name: 'Test Recipe',
@@ -28,13 +28,13 @@ describe('MealResultComponent', () => {
     ingredients: ['ingredient 1', 'ingredient 2'],
     preparationSteps: ['step 1', 'step 2'],
     cookingTime: '30 minutes',
-    pickyEaterTips: 'Tips for picky eaters'
+    pickyEaterTips: 'Tips for picky eaters',
   };
 
   beforeEach(async () => {
     // Create spy for LLMGROQService
     const spy = jasmine.createSpyObj('LLMGROQService', ['getMealSuggestions']);
-    
+
     await TestBed.configureTestingModule({
       imports: [
         MealResultComponent,
@@ -43,14 +43,14 @@ describe('MealResultComponent', () => {
         MatButtonModule,
         MatProgressSpinnerModule,
         MatListModule,
-        NoopAnimationsModule
+        NoopAnimationsModule,
       ],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         SharedDataService,
         { provide: LLMGROQService, useValue: spy },
-        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } }
+        { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
       ],
     }).compileComponents();
 
@@ -59,7 +59,7 @@ describe('MealResultComponent', () => {
     llmGroqServiceSpy = TestBed.inject(LLMGROQService) as jasmine.SpyObj<LLMGROQService>;
     sharedDataService = TestBed.inject(SharedDataService);
     router = TestBed.inject(Router);
-    
+
     // Setup default spy behavior
     llmGroqServiceSpy.getMealSuggestions.and.returnValue(of(mockMealSuggestion));
   });
@@ -72,10 +72,10 @@ describe('MealResultComponent', () => {
   it('should call getMealSuggestions on init with prompt from shared service', () => {
     // Arrange
     sharedDataService.mealPrompt = 'Test prompt';
-    
+
     // Act
     fixture.detectChanges();
-    
+
     // Assert
     expect(llmGroqServiceSpy.getMealSuggestions).toHaveBeenCalledWith('Test prompt');
   });
@@ -83,21 +83,21 @@ describe('MealResultComponent', () => {
   it('should call getMealSuggestions with default prompt if no prompt in shared service', () => {
     // Arrange
     sharedDataService.mealPrompt = '';
-    
+
     // Act
     fixture.detectChanges();
-    
+
     // Assert
     expect(llmGroqServiceSpy.getMealSuggestions).toHaveBeenCalledWith(jasmine.any(String));
   });
 
   it('should display loading spinner while getting suggestions', () => {
     // Arrange - don't resolve the observable yet
-    llmGroqServiceSpy.getMealSuggestions.and.returnValue(new Observable(observer => {}));
-    
+    llmGroqServiceSpy.getMealSuggestions.and.returnValue(new Observable((observer) => {}));
+
     // Act
     fixture.detectChanges();
-    
+
     // Assert
     expect(component.isLoading).toBeTrue();
     const spinner = fixture.nativeElement.querySelector('mat-spinner');
@@ -106,13 +106,11 @@ describe('MealResultComponent', () => {
 
   it('should display error message when API call fails', () => {
     // Arrange
-    llmGroqServiceSpy.getMealSuggestions.and.returnValue(
-      throwError(() => new Error('API Error'))
-    );
-    
+    llmGroqServiceSpy.getMealSuggestions.and.returnValue(throwError(() => new Error('API Error')));
+
     // Act
     fixture.detectChanges();
-    
+
     // Assert
     expect(component.errorMessage).toBeTruthy();
     const errorElement = fixture.nativeElement.querySelector('.error-message');
@@ -122,11 +120,11 @@ describe('MealResultComponent', () => {
   it('should display meal name', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     // Assert
     const mealName = fixture.nativeElement.querySelector('h2.name');
     expect(mealName).toBeTruthy();
@@ -136,11 +134,11 @@ describe('MealResultComponent', () => {
   it('should display short description of meal', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     // Assert
     const mealDescription = fixture.nativeElement.querySelector('p.description');
     expect(mealDescription).toBeTruthy();
@@ -150,11 +148,11 @@ describe('MealResultComponent', () => {
   it('should display ingredients list', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     // Assert
     const ingredientsList = fixture.nativeElement.querySelector('ul.ingredients');
     expect(ingredientsList).toBeTruthy();
@@ -165,11 +163,11 @@ describe('MealResultComponent', () => {
   it('should display preparation steps', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     // Assert
     const prepSteps = fixture.nativeElement.querySelector('ol.preparation-steps');
     expect(prepSteps).toBeTruthy();
@@ -180,11 +178,11 @@ describe('MealResultComponent', () => {
   it('should display cooking time', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     // Assert
     const cookTime = fixture.nativeElement.querySelector('p.cookingTime');
     expect(cookTime).toBeTruthy();
@@ -194,11 +192,11 @@ describe('MealResultComponent', () => {
   it('should display picky eater tip if present in response', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     // Assert
     const pickyEaterTip = fixture.nativeElement.querySelector('p.pickyEaterTip');
     expect(pickyEaterTip).toBeTruthy();
@@ -207,16 +205,16 @@ describe('MealResultComponent', () => {
 
   it('should not display picky eater tip if not present in response', () => {
     // Arrange
-    const suggestionWithoutTips = {...mockMealSuggestion};
+    const suggestionWithoutTips = { ...mockMealSuggestion };
     delete suggestionWithoutTips.pickyEaterTips;
-    
+
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = suggestionWithoutTips;
     fixture.detectChanges();
-    
+
     // Assert
     const pickyEaterSection = fixture.nativeElement.querySelector('.picky-eater-section');
     expect(pickyEaterSection).toBeFalsy();
@@ -225,61 +223,15 @@ describe('MealResultComponent', () => {
   it('should navigate back to form when back button is clicked', () => {
     // Act
     fixture.detectChanges();
-    
+
     // Wait for async operations to complete
     component.suggestion = mockMealSuggestion;
     fixture.detectChanges();
-    
+
     const backButton = fixture.nativeElement.querySelector('button:first-of-type');
     backButton.click();
-    
+
     // Assert
     expect(router.navigate).toHaveBeenCalledWith(['/meal-form']);
-  });
-
-  it('should regenerate suggestion when regenerate button is clicked', () => {
-    // Arrange
-    sharedDataService.mealPrompt = 'Test prompt';
-    
-    // Set up the component state
-    component.suggestion = mockMealSuggestion;
-    component.isLoading = false; // Button should NOT be disabled
-    
-    // Update the view
-    fixture.detectChanges();
-    
-    // Reset the spy to clear previous calls
-    llmGroqServiceSpy.getMealSuggestions.calls.reset();
-    
-    // Verify button is not disabled before clicking
-    const regenerateButton = fixture.nativeElement.querySelector('button:nth-of-type(2)');
-    expect(regenerateButton.disabled).toBeFalse(); 
-    
-    // Act - click the button
-    regenerateButton.click();
-    
-    // Assert
-    expect(llmGroqServiceSpy.getMealSuggestions).toHaveBeenCalledWith('Test prompt');
-  });
-
-  it('should disable regenerate button while loading', () => {
-    // Arrange
-    component.isLoading = true;
-    component.suggestion = mockMealSuggestion;
-    
-    // Act
-    fixture.detectChanges(); // Update the DOM
-    
-    // Reset the spy to clear previous calls
-    llmGroqServiceSpy.getMealSuggestions.calls.reset();
-    
-    // Get the button
-    const regenerateButton = fixture.nativeElement.querySelector('button:nth-of-type(2)');
-    
-    // Try to click the button
-    regenerateButton.click();
-    
-    // If the button is properly disabled, the click should not trigger the service call
-    expect(llmGroqServiceSpy.getMealSuggestions).not.toHaveBeenCalled();
   });
 });
