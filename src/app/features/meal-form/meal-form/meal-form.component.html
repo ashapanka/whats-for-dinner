@@ -5,7 +5,7 @@
   </mat-card-header>
 
   <mat-card-content>
-    <form [formGroup]="mealForm" (ngSubmit)="onSubmit()">
+    <form class="meal-form" [formGroup]="mealForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="fill">
         <mat-label>Time Available</mat-label>
         <mat-select formControlName="timeAvailable">
