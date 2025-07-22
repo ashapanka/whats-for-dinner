@@ -48,6 +48,49 @@ describe('MealFormComponent', () => {
     ).toBeTruthy();
   });
 
+  // Add tests for accessibility helper methods
+  describe('Accessibility Helper Methods', () => {
+    it('should return true for invalid touched field', () => {
+      const timeControl = component.mealForm.get('timeAvailable');
+      timeControl?.markAsTouched();
+      timeControl?.setErrors({ required: true });
+      
+      expect(component.isFieldInvalid('timeAvailable')).toBe(true);
+    });
+
+    it('should return false for valid field', () => {
+      const timeControl = component.mealForm.get('timeAvailable');
+      timeControl?.setValue('30');
+      
+      expect(component.isFieldInvalid('timeAvailable')).toBe(false);
+    });
+
+    it('should return false for invalid untouched field', () => {
+      const timeControl = component.mealForm.get('timeAvailable');
+      timeControl?.setErrors({ required: true });
+      
+      expect(component.isFieldInvalid('timeAvailable')).toBe(false);
+    });
+
+    it('should return correct checkbox description', () => {
+      component.mealForm.get('dietaryRestrictions.glutenFree')?.setValue(true);
+      expect(component.getCheckboxDescription('glutenFree')).toBe('glutenFree-desc');
+      
+      component.mealForm.get('dietaryRestrictions.glutenFree')?.setValue(false);
+      expect(component.getCheckboxDescription('glutenFree')).toBe(null);
+    });
+
+    it('should validate other restriction when other is checked', () => {
+      component.mealForm.get('dietaryRestrictions.other')?.setValue(true);
+      component.mealForm.get('dietaryRestrictions.otherRestriction')?.markAsTouched();
+      
+      expect(component.isOtherRestrictionInvalid()).toBe(true);
+      
+      component.mealForm.get('dietaryRestrictions.otherRestriction')?.setValue('eggs');
+      expect(component.isOtherRestrictionInvalid()).toBe(false);
+    });
+  });
+
   it('should display # of people input', () => {
     expect(
       fixture.nativeElement.querySelector('input[formControlName="numberOfPeople"]'),

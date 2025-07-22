@@ -1,86 +1,227 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ sharedDataService.title }}</mat-card-title>
-    <mat-card-subtitle>{{ sharedDataService.description }}</mat-card-subtitle>
+    <mat-card-title id="page-title">{{ sharedDataService.title }}</mat-card-title>
+    <mat-card-subtitle id="page-description">{{ sharedDataService.description }}</mat-card-subtitle>
   </mat-card-header>
 
   <mat-card-content>
-    <form class="meal-form" [formGroup]="mealForm" (ngSubmit)="onSubmit()">
+    <form class="meal-form" 
+          [formGroup]="mealForm" 
+          (ngSubmit)="onSubmit()" 
+          role="form" 
+          aria-labelledby="form-title"
+          aria-describedby="form-description"
+          novalidate>
+
+      <!-- Required fields indicator -->
+      <p class="required-fields-note" aria-label="Required fields information">
+        <span aria-hidden="true">*</span> indicates required fields
+      </p>
+
+      <!-- Time Available Field -->
       <mat-form-field appearance="fill">
-        <mat-label>Time Available</mat-label>
-        <mat-select formControlName="timeAvailable">
-          <mat-option value="">Select an option</mat-option>
-          <!-- if user choose 5 minutes, rather than displaying a list of meals, display a message saying "Order takeout". Give them restaurant suggestions based on location -->
-          <mat-option value="5">5 minutes</mat-option>
-          <mat-option value="15">15 minutes</mat-option>
-          <mat-option value="30">30 minutes</mat-option>
-          <mat-option value="45">45 minutes</mat-option>
-          <mat-option value="60">1 hour</mat-option>
+        <mat-label>
+          Time Available 
+          <span class="required-indicator" aria-label="required">*</span>
+        </mat-label>
+        <mat-select formControlName="timeAvailable" 
+                    required
+                    aria-describedby="time-help time-error"
+                    [attr.aria-invalid]="isFieldInvalid('timeAvailable')"
+                    [attr.aria-required]="true">
+          <mat-option value="" disabled>Select an option</mat-option>
+          <mat-option value="5" aria-label="5 minutes - Quick meal option">5 minutes</mat-option>
+          <mat-option value="15" aria-label="15 minutes - Fast cooking">15 minutes</mat-option>
+          <mat-option value="30" aria-label="30 minutes - Moderate cooking time">30 minutes</mat-option>
+          <mat-option value="45" aria-label="45 minutes - Extended cooking">45 minutes</mat-option>
+          <mat-option value="60" aria-label="1 hour - Full cooking experience">1 hour</mat-option>
         </mat-select>
+        <mat-hint id="time-help">Choose how much time you have to prepare the meal</mat-hint>
+        <mat-error id="time-error" *ngIf="isFieldInvalid('timeAvailable')" role="alert">
+          Please select how much time you have available
+        </mat-error>
       </mat-form-field>
 
+      <!-- Number of People Field -->
       <mat-form-field appearance="fill">
-        <mat-label>Number of people</mat-label>
-        <input
-          matInput
-          type="number"
-          formControlName="numberOfPeople"
-          placeholder="Enter number of people"
-          min="1"
-        />
+        <mat-label>
+          Number of people 
+          <span class="required-indicator" aria-label="required">*</span>
+        </mat-label>
+        <input matInput
+               type="number"
+               formControlName="numberOfPeople"
+               placeholder="Enter number of people"
+               min="1"
+               max="20"
+               required
+               aria-describedby="people-help people-error"
+               [attr.aria-invalid]="isFieldInvalid('numberOfPeople')"
+               [attr.aria-required]="true"
+               autocomplete="off">
+        <mat-hint id="people-help">Enter the number of people you're cooking for (1-20)</mat-hint>
+        <mat-error id="people-error" *ngIf="isFieldInvalid('numberOfPeople')" role="alert">
+          <span *ngIf="mealForm.get('numberOfPeople')?.hasError('required')">
+            Number of people is required
+          </span>
+          <span *ngIf="mealForm.get('numberOfPeople')?.hasError('min')">
+            Must be at least 1 person
+          </span>
+          <span *ngIf="mealForm.get('numberOfPeople')?.hasError('max')">
+            Maximum 20 people allowed
+          </span>
+        </mat-error>
       </mat-form-field>
 
+      <!-- Ingredients Field -->
       <mat-form-field appearance="fill">
-        <mat-label>Ingredients</mat-label>
-        <textarea
-          matInput
-          formControlName="ingredients"
-          rows="4"
-          placeholder="List ingredients separated by commas"
-        ></textarea>
+        <mat-label>
+          Ingredients 
+          <span class="required-indicator" aria-label="required">*</span>
+        </mat-label>
+        <textarea matInput
+                  formControlName="ingredients"
+                  rows="4"
+                  placeholder="List ingredients separated by commas (e.g., chicken, rice, broccoli)"
+                  required
+                  aria-describedby="ingredients-help ingredients-error"
+                  [attr.aria-invalid]="isFieldInvalid('ingredients')"
+                  [attr.aria-required]="true"
+                  maxlength="500"></textarea>
+        <mat-hint id="ingredients-help">
+          List available ingredients separated by commas. This helps us suggest recipes you can actually make.
+        </mat-hint>
+        <mat-error id="ingredients-error" *ngIf="isFieldInvalid('ingredients')" role="alert">
+          Please list at least some ingredients you have available
+        </mat-error>
       </mat-form-field>
 
-      <div>
-        <h3>Dietary Restrictions</h3>
-        <div formGroupName="dietaryRestrictions">
-          <section>
-            <mat-checkbox formControlName="glutenFree">Gluten Free</mat-checkbox>
-          </section>
-          <section>
-            <mat-checkbox formControlName="dairyFree">Dairy Free</mat-checkbox>
-          </section>
-          <section>
-            <mat-checkbox formControlName="vegetarian">Vegetarian</mat-checkbox>
-          </section>
-          <section>
-            <mat-checkbox formControlName="peanutAllergy">Peanut Allergy</mat-checkbox>
-          </section>
-          <section>
-            <mat-checkbox formControlName="other">Other Restriction</mat-checkbox>
-          </section>
+      <!-- Dietary Restrictions Fieldset -->
+      <fieldset class="dietary-restrictions-fieldset">
+        <legend id="dietary-legend">Dietary Restrictions (Optional)</legend>
+        <p class="fieldset-description">Select any dietary restrictions we should consider</p>
+        
+        <div formGroupName="dietaryRestrictions" 
+             role="group" 
+             aria-labelledby="dietary-legend"
+             aria-describedby="dietary-help">
+          
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="glutenFree" 
+                          [attr.aria-describedby]="getCheckboxDescription('glutenFree')">
+              Gluten Free
+            </mat-checkbox>
+            <div id="gluten-desc" class="checkbox-description" 
+                 *ngIf="mealForm.get('dietaryRestrictions.glutenFree')?.value">
+              Excludes wheat, barley, rye, and other gluten-containing ingredients
+            </div>
+          </div>
 
-          <mat-form-field
-            *ngIf="mealForm.get('dietaryRestrictions.other')?.value"
-            appearance="fill"
-          >
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="dairyFree"
+                          [attr.aria-describedby]="getCheckboxDescription('dairyFree')">
+              Dairy Free
+            </mat-checkbox>
+            <div id="dairy-desc" class="checkbox-description"
+                 *ngIf="mealForm.get('dietaryRestrictions.dairyFree')?.value">
+              Excludes milk, cheese, butter, and other dairy products
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="vegetarian"
+                          [attr.aria-describedby]="getCheckboxDescription('vegetarian')">
+              Vegetarian
+            </mat-checkbox>
+            <div id="vegetarian-desc" class="checkbox-description"
+                 *ngIf="mealForm.get('dietaryRestrictions.vegetarian')?.value">
+              No meat, poultry, or fish
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="peanutAllergy"
+                          [attr.aria-describedby]="getCheckboxDescription('peanutAllergy')">
+              Peanut Allergy
+            </mat-checkbox>
+            <div id="peanut-desc" class="checkbox-description"
+                 *ngIf="mealForm.get('dietaryRestrictions.peanutAllergy')?.value">
+              Excludes peanuts and peanut-containing products
+            </div>
+          </div>
+
+          <div class="checkbox-group">
+            <mat-checkbox formControlName="other"
+                          aria-describedby="other-checkbox-help">
+              Other Restriction
+            </mat-checkbox>
+            <div id="other-checkbox-help" class="checkbox-description">
+              Check this if you have a specific ingredient to avoid
+            </div>
+          </div>
+
+          <!-- Other Restriction Input -->
+          <mat-form-field *ngIf="mealForm.get('dietaryRestrictions.other')?.value"
+                          appearance="fill"
+                          class="other-restriction-field">
             <mat-label>Ingredient to Exclude</mat-label>
-            <input
-              matInput
-              formControlName="otherRestriction"
-              placeholder="Enter ingredient to avoid (e.g., eggs, shellfish)"
-            />
+            <input matInput
+                   formControlName="otherRestriction"
+                   placeholder="Enter ingredient to avoid (e.g., eggs, shellfish)"
+                   aria-describedby="other-restriction-help other-restriction-error"
+                   [attr.aria-invalid]="isOtherRestrictionInvalid()"
+                   maxlength="100">
+            <mat-hint id="other-restriction-help">
+              Specify the ingredient or food you need to avoid
+            </mat-hint>
+            <mat-error id="other-restriction-error" 
+                       *ngIf="isOtherRestrictionInvalid()" 
+                       role="alert">
+              Please specify what ingredient to exclude
+            </mat-error>
           </mat-form-field>
         </div>
-      </div>
+        <div id="dietary-help" class="sr-only">
+          These restrictions will be applied to all recipe suggestions
+        </div>
+      </fieldset>
 
-      <section>
-        <mat-checkbox formControlName="pickyEaters">Picky Eaters</mat-checkbox>
-      </section>
+      <!-- Picky Eaters Section -->
+      <fieldset class="picky-eaters-fieldset">
+        <legend>Additional Preferences</legend>
+        <div class="checkbox-group">
+          <mat-checkbox formControlName="pickyEaters"
+                        aria-describedby="picky-eaters-help">
+            Picky Eaters
+          </mat-checkbox>
+          <div id="picky-eaters-help" class="checkbox-description">
+            Include tips and modifications for picky eaters
+          </div>
+        </div>
+      </fieldset>
 
-      <mat-card-actions align="end">
-        <button mat-raised-button color="primary" type="submit" [disabled]="!mealForm.valid">
-          Submit
+      <!-- Form Actions -->
+      <mat-card-actions align="end" class="form-actions">
+        <button mat-raised-button 
+                color="primary" 
+                type="submit" 
+                [disabled]="!mealForm.valid"
+                [attr.aria-describedby]="!mealForm.valid ? 'submit-error' : null"
+                aria-label="Submit meal preferences to get recipe suggestions">
+          <span *ngIf="!isSubmitting">Get Recipe Suggestions</span>
+          <span *ngIf="isSubmitting" aria-live="polite">
+            <mat-spinner diameter="20" aria-hidden="true"></mat-spinner>
+            Generating suggestions...
+          </span>
         </button>
+        
+        <div id="submit-error" 
+             *ngIf="!mealForm.valid && mealForm.touched" 
+             class="submit-error"
+             role="alert"
+             aria-live="polite">
+          Please fill in all required fields before submitting
+        </div>
       </mat-card-actions>
     </form>
   </mat-card-content>
