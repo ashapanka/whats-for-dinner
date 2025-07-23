@@ -6,7 +6,6 @@ import { SharedDataService } from '../../../core/services/shared-data.service';
 import { MealSuggestion } from '../../../core/models/meal-suggestion.interface';
 
 // Import Material modules
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -14,7 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-meal-result',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatListModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatButtonModule, MatListModule, MatProgressSpinnerModule],
   templateUrl: './meal-result.component.html',
   styleUrl: './meal-result.component.scss',
 })

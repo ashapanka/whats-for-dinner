@@ -1,51 +1,60 @@
-<mat-card>
-  <mat-card-header>
-    <mat-card-title>{{ sharedDataService.title }} - Results</mat-card-title>
-    <mat-card-subtitle>{{ sharedDataService.description }}</mat-card-subtitle>
-  </mat-card-header>
+<div class="container">
+  <header class="page-header">
+    <h1 id="page-title">{{ sharedDataService.title }} - Results</h1>
+    <p id="page-description">{{ sharedDataService.description }}</p>
+  </header>
 
-  <mat-card-content>
-    <div *ngIf="isLoading">
-      <mat-spinner diameter="40"></mat-spinner>
+  <main class="page-content">
+    <div *ngIf="isLoading" class="loading-section" aria-live="polite">
+      <mat-spinner diameter="40" aria-hidden="true"></mat-spinner>
       <p>Generating meal suggestions...</p>
     </div>
 
-    <div *ngIf="errorMessage" class="error-message">
+    <div *ngIf="errorMessage" class="error-message" role="alert">
       <p>{{ errorMessage }}</p>
     </div>
 
     <div *ngIf="suggestion" class="suggestion-container">
       <h2 class="name">{{ suggestion.name }}</h2>
 
-      <h3>Description</h3>
-      <p class="description">{{ suggestion.description }}</p>
+      <section class="description-section">
+        <h3>Description</h3>
+        <p class="description">{{ suggestion.description }}</p>
+      </section>
 
-      <h3>Ingredients</h3>
-      <ul class="ingredients">
-        <li *ngFor="let ingredient of suggestion.ingredients">{{ ingredient }}</li>
-      </ul>
+      <section class="ingredients-section">
+        <h3>Ingredients</h3>
+        <ul class="ingredients">
+          <li *ngFor="let ingredient of suggestion.ingredients">{{ ingredient }}</li>
+        </ul>
+      </section>
 
-      <h3>Preparation Steps</h3>
-      <ol class="preparation-steps">
-        <li *ngFor="let step of suggestion.preparationSteps">{{ step }}</li>
-      </ol>
+      <section class="steps-section">
+        <h3>Preparation Steps</h3>
+        <ol class="preparation-steps">
+          <li *ngFor="let step of suggestion.preparationSteps">{{ step }}</li>
+        </ol>
+      </section>
 
-      <h3>Cooking Time</h3>
-      <p class="cookingTime">{{ suggestion.cookingTime }}</p>
+      <section class="time-section">
+        <h3>Cooking Time</h3>
+        <p class="cookingTime">{{ suggestion.cookingTime }}</p>
+      </section>
 
-      <div *ngIf="suggestion.pickyEaterTips" class="picky-eater-section">
+      <section *ngIf="suggestion.pickyEaterTips" class="picky-eater-section">
         <h3>Tips for Picky Eaters</h3>
         <p class="pickyEaterTip">{{ suggestion.pickyEaterTips }}</p>
-      </div>
+      </section>
 
       <!-- Fallback for raw response if parsing failed -->
-      <div *ngIf="suggestion.rawResponse" class="raw-response">
+      <section *ngIf="suggestion.rawResponse" class="raw-response">
+        <h3>Raw Response</h3>
         <p>{{ suggestion.rawResponse }}</p>
-      </div>
+      </section>
     </div>
-  </mat-card-content>
+  </main>
 
-  <mat-card-actions>
+  <footer class="page-actions">
     <button mat-button (click)="backToForm()">Back to Form</button>
-  </mat-card-actions>
-</mat-card>
+  </footer>
+</div>

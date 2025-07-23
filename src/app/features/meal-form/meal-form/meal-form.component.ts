@@ -4,13 +4,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 
 // Import Material modules
-import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SharedDataService } from '../../../core/services/shared-data.service';
 
 @Component({
@@ -19,13 +19,13 @@ import { SharedDataService } from '../../../core/services/shared-data.service';
   imports: [
     ReactiveFormsModule,
     CommonModule,
-    MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatOptionModule,
     MatCheckboxModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './meal-form.component.html',
   styleUrl: './meal-form.component.scss',
