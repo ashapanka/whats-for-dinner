@@ -126,7 +126,7 @@ describe('MealResultComponent', () => {
     fixture.detectChanges();
 
     // Assert
-    const mealName = fixture.nativeElement.querySelector('h2.name');
+    const mealName = fixture.nativeElement.querySelector('p.name');
     expect(mealName).toBeTruthy();
     expect(mealName.textContent).toContain('Test Recipe');
   });
