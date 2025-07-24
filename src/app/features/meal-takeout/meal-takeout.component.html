@@ -9,10 +9,15 @@
       <p>5 minutes isn't enough time to cook. Let's find takeout options near you!</p>
     </div>
 
-    <div class="action-section">
+    <div class="action-section" *ngIf="!isLoading">
       <button mat-raised-button color="primary" class="find-restaurants-button" (click)="findNearbyRestaurants()">
         Find Restaurants Near Me
       </button>
+    </div>
+
+    <div class="loading-section" *ngIf="isLoading">
+      <mat-spinner></mat-spinner>
+      <p class="loading-message">{{ loadingMessage }}</p>
     </div>
   </main>
 

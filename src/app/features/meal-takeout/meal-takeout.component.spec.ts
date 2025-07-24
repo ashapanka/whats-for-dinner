@@ -10,7 +10,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MealTakeoutComponent } from './meal-takeout.component';
 import { SharedDataService } from '../../core/services/shared-data.service';
 
-fdescribe('MealTakeoutComponent', () => {
+describe('MealTakeoutComponent', () => {
   let component: MealTakeoutComponent;
   let fixture: ComponentFixture<MealTakeoutComponent>;
   let router: Router;
@@ -65,5 +65,27 @@ fdescribe('MealTakeoutComponent', () => {
     findButton.click();
 
     expect(component.findNearbyRestaurants).toHaveBeenCalled();
+  });
+
+  it('should show loading spinner with location permission message when finding restaurants', () => {
+    fixture.detectChanges();
+
+    // Initially no loading state
+    expect(component.isLoading).toBeFalse();
+    let spinner = fixture.nativeElement.querySelector('mat-spinner');
+    expect(spinner).toBeFalsy();
+
+    // Set loading state
+    component.isLoading = true;
+    component.loadingMessage = 'Requesting location permission...';
+    fixture.detectChanges();
+
+    // Should show spinner and message
+    spinner = fixture.nativeElement.querySelector('mat-spinner');
+    expect(spinner).toBeTruthy();
+    
+    const loadingText = fixture.nativeElement.querySelector('.loading-message');
+    expect(loadingText).toBeTruthy();
+    expect(loadingText.textContent.trim()).toBe('Requesting location permission...');
   });
 });

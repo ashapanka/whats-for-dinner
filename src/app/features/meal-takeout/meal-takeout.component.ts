@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 import { SharedDataService } from '../../core/services/shared-data.service';
 
 @Component({
@@ -14,6 +15,7 @@ import { SharedDataService } from '../../core/services/shared-data.service';
 })
 export class MealTakeoutComponent implements OnInit {
   isLoading = false;
+  loadingMessage = '';
   errorMessage: string | null = null;
   suggestions: any[] = [];
 
@@ -27,6 +29,8 @@ export class MealTakeoutComponent implements OnInit {
   }
 
   findNearbyRestaurants() {
+    this.isLoading = true;
+    this.loadingMessage = 'Requesting location permission...';
     // TODO: Implement geolocation and restaurant finding logic
   }
 
