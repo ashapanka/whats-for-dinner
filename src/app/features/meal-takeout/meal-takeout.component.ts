@@ -10,7 +10,7 @@ import { SharedDataService } from '../../core/services/shared-data.service';
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './meal-takeout.component.html',
-  styleUrl: './meal-takeout.component.scss',
+  styleUrl: './meal-takeout.component.scss'
 })
 export class MealTakeoutComponent implements OnInit {
   isLoading = false;
@@ -23,7 +23,11 @@ export class MealTakeoutComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // TODO: Implement takeout suggestion logic
+    // Component initialized, waiting for user action
+  }
+
+  findNearbyRestaurants() {
+    // TODO: Implement geolocation and restaurant finding logic
   }
 
   backToForm() {
