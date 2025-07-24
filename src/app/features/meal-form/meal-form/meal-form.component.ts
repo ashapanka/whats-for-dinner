@@ -122,15 +122,15 @@ export class MealFormComponent {
   onSubmit() {
     if (this.mealForm.valid) {
       this.isSubmitting = true;
-
-      // Store the form data
       this.sharedDataService.mealFormData = this.mealForm.value;
 
-      // Create a prompt based on the form data
-      this.createMealPrompt();
-
-      // Navigate to results page
-      this.router.navigate(['/meal-result']);
+      // Check if time is too short for cooking
+      if (this.mealForm.value.timeAvailable === '5') {
+        this.router.navigate(['/meal-takeout']);
+      } else {
+        this.createMealPrompt();
+        this.router.navigate(['/meal-result']);
+      }
     } else {
       // Mark all fields as touched to show validation errors
       this.markFormGroupTouched(this.mealForm);
