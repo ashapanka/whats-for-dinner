@@ -14,17 +14,10 @@ describe('MealFormComponent', () => {
   beforeEach(async () => {
     // Create a spy object for Router with a navigate spy method
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
-    
+
     await TestBed.configureTestingModule({
-      imports: [
-        MealFormComponent,
-        ReactiveFormsModule,
-        NoopAnimationsModule
-      ],
-      providers: [
-        SharedDataService,
-        { provide: Router, useValue: routerSpy }
-      ]
+      imports: [MealFormComponent, ReactiveFormsModule, NoopAnimationsModule],
+      providers: [SharedDataService, { provide: Router, useValue: routerSpy }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MealFormComponent);
@@ -54,28 +47,28 @@ describe('MealFormComponent', () => {
       const timeControl = component.mealForm.get('timeAvailable');
       timeControl?.markAsTouched();
       timeControl?.setErrors({ required: true });
-      
+
       expect(component.isFieldInvalid('timeAvailable')).toBe(true);
     });
 
     it('should return false for valid field', () => {
       const timeControl = component.mealForm.get('timeAvailable');
       timeControl?.setValue('30');
-      
+
       expect(component.isFieldInvalid('timeAvailable')).toBe(false);
     });
 
     it('should return false for invalid untouched field', () => {
       const timeControl = component.mealForm.get('timeAvailable');
       timeControl?.setErrors({ required: true });
-      
+
       expect(component.isFieldInvalid('timeAvailable')).toBe(false);
     });
 
     it('should return correct checkbox description', () => {
       component.mealForm.get('dietaryRestrictions.glutenFree')?.setValue(true);
       expect(component.getCheckboxDescription('glutenFree')).toBe('glutenFree-desc');
-      
+
       component.mealForm.get('dietaryRestrictions.glutenFree')?.setValue(false);
       expect(component.getCheckboxDescription('glutenFree')).toBe(null);
     });
@@ -83,9 +76,9 @@ describe('MealFormComponent', () => {
     it('should validate other restriction when other is checked', () => {
       component.mealForm.get('dietaryRestrictions.other')?.setValue(true);
       component.mealForm.get('dietaryRestrictions.otherRestriction')?.markAsTouched();
-      
+
       expect(component.isOtherRestrictionInvalid()).toBe(true);
-      
+
       component.mealForm.get('dietaryRestrictions.otherRestriction')?.setValue('eggs');
       expect(component.isOtherRestrictionInvalid()).toBe(false);
     });
@@ -202,9 +195,9 @@ describe('MealFormComponent', () => {
           dairyFree: false,
           vegetarian: false,
           peanutAllergy: false,
-          other: false
+          other: false,
         },
-        pickyEaters: false
+        pickyEaters: false,
       });
 
       // Act
@@ -230,9 +223,9 @@ describe('MealFormComponent', () => {
           dairyFree: true,
           vegetarian: false,
           peanutAllergy: false,
-          other: false
+          other: false,
         },
-        pickyEaters: false
+        pickyEaters: false,
       });
 
       // Act
@@ -255,9 +248,9 @@ describe('MealFormComponent', () => {
           dairyFree: false,
           vegetarian: false,
           peanutAllergy: false,
-          other: false
+          other: false,
         },
-        pickyEaters: true
+        pickyEaters: true,
       });
 
       // Act
@@ -282,7 +275,7 @@ describe('MealFormComponent', () => {
           other: true,
           otherRestriction: 'shellfish allergy', // Updated to match new structure
         },
-        pickyEaters: false
+        pickyEaters: false,
       });
 
       // Act
@@ -307,7 +300,7 @@ describe('MealFormComponent', () => {
           other: true,
           otherRestriction: 'eggs',
         },
-        pickyEaters: false
+        pickyEaters: false,
       });
 
       // Act
@@ -316,7 +309,9 @@ describe('MealFormComponent', () => {
       // Assert
       expect(sharedDataService.mealPrompt).toContain('dietary restrictions');
       expect(sharedDataService.mealPrompt).toContain('no eggs');
-      expect(sharedDataService.mealPrompt).toContain('IMPORTANT: If "no eggs" or similar restriction is specified');
+      expect(sharedDataService.mealPrompt).toContain(
+        'IMPORTANT: If "no eggs" or similar restriction is specified',
+      );
     });
 
     it('should include explicit warning about excluded ingredients', () => {
@@ -333,7 +328,7 @@ describe('MealFormComponent', () => {
           other: true,
           otherRestriction: 'shellfish',
         },
-        pickyEaters: false
+        pickyEaters: false,
       });
 
       // Act
@@ -357,9 +352,9 @@ describe('MealFormComponent', () => {
         dairyFree: false,
         vegetarian: false,
         peanutAllergy: false,
-        other: false
+        other: false,
       },
-      pickyEaters: false
+      pickyEaters: false,
     });
 
     // Act
@@ -377,5 +372,51 @@ describe('MealFormComponent', () => {
 
     // Assert
     expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  it('should navigate to meal-takeout when time is 5 minutes', () => {
+    // Arrange
+    component.mealForm.patchValue({
+      timeAvailable: '5',
+      numberOfPeople: 4,
+      ingredients: 'chicken, rice, broccoli',
+      dietaryRestrictions: {
+        glutenFree: false,
+        dairyFree: false,
+        vegetarian: false,
+        peanutAllergy: false,
+        other: false,
+      },
+      pickyEaters: false,
+    });
+
+    // Act
+    component.onSubmit();
+
+    // Assert
+    expect(router.navigate).toHaveBeenCalledWith(['/meal-takeout']);
+  });
+
+  it('should not navigate to meal-takeout when time is not 5 minutes', () => {
+    // Arrange
+    component.mealForm.patchValue({
+      timeAvailable: '30',
+      numberOfPeople: 4,
+      ingredients: 'chicken, rice, broccoli',
+      dietaryRestrictions: {
+        glutenFree: false,
+        dairyFree: false,
+        vegetarian: false,
+        peanutAllergy: false,
+        other: false,
+      },
+      pickyEaters: false,
+    });
+
+    // Act
+    component.onSubmit();
+
+    // Assert
+    expect(router.navigate).not.toHaveBeenCalledWith(['/meal-takeout']);
   });
 });
