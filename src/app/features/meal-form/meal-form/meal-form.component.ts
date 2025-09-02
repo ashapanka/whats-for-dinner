@@ -211,8 +211,7 @@ Please return your response in the following JSON format:
   "description": "Brief description of the dish",
   "ingredients": ["ingredient 1", "ingredient 2", "..."],
   "preparationSteps": ["step 1", "step 2", "..."],
-  "cookingTime": "Total cooking time",
-  ${formData.pickyEaters ? '"pickyEaterTips": "Tips for picky eaters"' : ''}
+  "cookingTime": "Total cooking time"${formData.pickyEaters ? ',\n  "pickyEaterTips": "Tips for picky eaters"' : ''}
 }`;
 
     // Store the prompt in the shared service
