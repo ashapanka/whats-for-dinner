@@ -99,7 +99,7 @@ describe('MealTakeoutComponent', () => {
     } as GeolocationPosition;
 
     geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
-    restaurantService.findNearbyRestaurants.and.returnValue(of({ results: [], status: 'OK' }));
+    restaurantService.findNearbyRestaurants.and.returnValue(of({ restaurants: [], status: 'OK' }));
 
     fixture.detectChanges();
 
@@ -150,11 +150,15 @@ describe('MealTakeoutComponent', () => {
   it('should call restaurant service with coordinates after successful geolocation', () => {
     // Arrange
     const mockPosition = {
-      coords: { latitude: 40.7128, longitude: -74.006 },
+      coords: {
+        latitude: 40.7128,
+        longitude: -74.006,
+      },
+      timestamp: Date.now(),
     } as GeolocationPosition;
 
     geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
-    restaurantService.findNearbyRestaurants.and.returnValue(of({ results: [], status: 'OK' }));
+    restaurantService.findNearbyRestaurants.and.returnValue(of({ restaurants: [], status: 'OK' }));
 
     fixture.detectChanges();
 
@@ -163,7 +167,10 @@ describe('MealTakeoutComponent', () => {
     findButton.click();
 
     // Assert
-    expect(restaurantService.findNearbyRestaurants).toHaveBeenCalledWith();
+    expect(restaurantService.findNearbyRestaurants).toHaveBeenCalledWith(
+      mockPosition.coords.latitude,
+      mockPosition.coords.longitude,
+    );
   });
 
   // Error handling
