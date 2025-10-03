@@ -23,7 +23,7 @@ export interface RestaurantSearchResponse {
   providedIn: 'root'
 })
 export class RestaurantService {
-  private readonly apiUrl = environment.groqApiUrl || 'http://localhost:3001/api';
+  private readonly apiUrl = environment.backendApiUrl;
 
   constructor(private http: HttpClient) {}
 
