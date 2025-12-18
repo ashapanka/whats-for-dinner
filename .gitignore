@@ -44,3 +44,14 @@ Thumbs.db
 # Environment files with secrets
 /src/environments/environment.ts
 .env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/.venv/
+backend/venv/
+*.egg-info/
+.pytest_cache/
