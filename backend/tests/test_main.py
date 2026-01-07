@@ -217,9 +217,12 @@ def test_search_restaurants_response_has_restaurants_field(client, mocker):
         "status": "OK",
     }
 
+    # Mock the RestaurantService.search_nearby_restaurants method
+    mock_service = mocker.AsyncMock()
+    mock_service.search_nearby_restaurants.return_value = mock_places_response
     mocker.patch(
-        "main.search_nearby_restaurants",
-        return_value=mock_places_response,
+        "main.RestaurantService",
+        return_value=mock_service,
     )
 
     response = client.post(
@@ -237,9 +240,12 @@ def test_search_restaurants_response_has_status_field(client, mocker):
     """Test that response contains 'status' field."""
     mock_places_response = {"results": [], "status": "OK"}
 
+    # Mock the RestaurantService.search_nearby_restaurants method
+    mock_service = mocker.AsyncMock()
+    mock_service.search_nearby_restaurants.return_value = mock_places_response
     mocker.patch(
-        "main.search_nearby_restaurants",
-        return_value=mock_places_response,
+        "main.RestaurantService",
+        return_value=mock_service,
     )
 
     response = client.post(
@@ -274,9 +280,12 @@ def test_search_restaurants_filters_by_preferences(client, mocker):
         "status": "OK",
     }
 
+    # Mock the RestaurantService.search_nearby_restaurants method
+    mock_service = mocker.AsyncMock()
+    mock_service.search_nearby_restaurants.return_value = mock_places_response
     mocker.patch(
-        "main.search_nearby_restaurants",
-        return_value=mock_places_response,
+        "main.RestaurantService",
+        return_value=mock_service,
     )
 
     response = client.post(
@@ -321,9 +330,12 @@ def test_search_restaurants_handles_zero_results(client, mocker):
     """Test handling when no restaurants are found."""
     mock_places_response = {"results": [], "status": "ZERO_RESULTS"}
 
+    # Mock the RestaurantService.search_nearby_restaurants method
+    mock_service = mocker.AsyncMock()
+    mock_service.search_nearby_restaurants.return_value = mock_places_response
     mocker.patch(
-        "main.search_nearby_restaurants",
-        return_value=mock_places_response,
+        "main.RestaurantService",
+        return_value=mock_service,
     )
 
     response = client.post(
