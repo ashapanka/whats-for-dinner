@@ -41,7 +41,7 @@ def test_nonexistent_endpoint_returns_404(client):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-# Google Places API - Restaurant Search Tests
+# Overpass API (OpenStreetMap) - Restaurant Search Tests
 
 
 def test_search_restaurants_endpoint_exists(client):
@@ -203,7 +203,7 @@ def test_search_restaurants_returns_json(client):
 
 def test_search_restaurants_response_has_restaurants_field(client, mocker):
     """Test that successful response contains 'restaurants' field."""
-    # Mock the Google Places API call to return success
+    # Mock the Overpass API call to return success
     mock_places_response = {
         "results": [
             {
@@ -298,26 +298,15 @@ def test_search_restaurants_filters_by_preferences(client, mocker):
 # Error Handling Tests
 
 
-def test_search_restaurants_handles_api_key_missing(client, mocker):
-    """Test graceful handling when Google API key is not configured."""
-    mocker.patch("main.get_google_api_key", return_value=None)
+def test_search_restaurants_handles_overpass_api_error(client, mocker):
+    """Test handling of Overpass API errors."""
+    # Mock the restaurant service to raise an exception
+    mock_service = mocker.AsyncMock()
+    mock_service.search_nearby_restaurants.side_effect = Exception("Overpass API Error")
 
-    response = client.post(
-        "/api/restaurants/search",
-        json={"latitude": 40.7128, "longitude": -74.0060, "preferences": []},
-    )
-
-    assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
-    data = response.json()
-    assert "detail" in data
-    assert "API key" in data["detail"] or "not configured" in data["detail"]
-
-
-def test_search_restaurants_handles_google_api_error(client, mocker):
-    """Test handling of Google Places API errors."""
     mocker.patch(
-        "main.search_nearby_restaurants",
-        side_effect=Exception("Google API Error"),
+        "main.RestaurantService",
+        return_value=mock_service,
     )
 
     response = client.post(
