@@ -1,15 +1,25 @@
 """
 Restaurant search service using Overpass API (OpenStreetMap).
 """
+import asyncio
+
 import httpx
 from typing import Optional
 
 
 class RestaurantService:
     """Service for searching restaurants using Overpass API."""
-    
-    def __init__(self, overpass_url: str = "https://overpass-api.de/api/interpreter"):
-        self.overpass_url = overpass_url
+
+    # List of public Overpass API servers (fallback options)
+    OVERPASS_SERVERS = [
+        "https://overpass.kumi.systems/api/interpreter",  # Fast, reliable 
+        "https://overpass-api.de/api/interpreter",  # Original official server 
+    ]
+
+    def __init__(self, overpass_url: str = None):
+        # Use provided URL or default to the first server
+        self.overpass_url = overpass_url or self.OVERPASS_SERVERS[0]
+        self.timeout = 60.0  # Increased timeout for slower servers
     
     async def search_nearby_restaurants(
         self,
@@ -20,61 +30,83 @@ class RestaurantService:
     ) -> dict:
         """
         Search for nearby restaurants using Overpass API.
-        
+
         Args:
             latitude: Latitude coordinate
             longitude: Longitude coordinate
             radius: Search radius in meters (default: 1500)
             preferences: List of cuisine preferences to filter by
-        
+
         Returns:
             Dictionary with 'results' and 'status' keys
         """
         # Build Overpass QL query
         # Search for nodes and ways tagged as restaurants/cafes/fast_food
         query = f"""
-        [out:json][timeout:25];
+        [out:json][timeout:60];
         (
-          node["amenity"~"restaurant|cafe|fast_food|bar|pub"](around:{radius},{latitude},{longitude});
-          way["amenity"~"restaurant|cafe|fast_food|bar|pub"](around:{radius},{latitude},{longitude});
+          node["amenity"~"restaurant|cafe|fast_food"](around:{radius},{latitude},{longitude});
+          way["amenity"~"restaurant|cafe|fast_food"](around:{radius},{latitude},{longitude});
         );
         out body;
         >;
         out skel qt;
         """
-        
-        try:
-            async with httpx.AsyncClient(timeout=30.0) as client:
-                response = await client.post(
-                    self.overpass_url,
-                    data={"data": query}
-                )
-                response.raise_for_status()
-                data = response.json()
-            
-            # Parse Overpass response
-            elements = data.get("elements", [])
-            restaurants = self._parse_restaurants(elements, preferences)
-            
-            status = "OK" if restaurants else "ZERO_RESULTS"
-            
-            return {
-                "results": restaurants,
-                "status": status
-            }
-        
-        except httpx.HTTPError as e:
-            return {
-                "results": [],
-                "status": "ERROR",
-                "error": str(e)
-            }
-        except Exception as e:
-            return {
-                "results": [],
-                "status": "ERROR",
-                "error": str(e)
-            }
+
+        # Try primary server first, then fallback servers
+        servers_to_try = [self.overpass_url] + [
+            s for s in self.OVERPASS_SERVERS if s != self.overpass_url
+        ]
+
+        last_error = None
+
+        for server_url in servers_to_try:
+            try:
+                async with httpx.AsyncClient(timeout=self.timeout) as client:
+                    response = await client.post(
+                        server_url,
+                        data={"data": query}
+                    )
+                    response.raise_for_status()
+                    data = response.json()
+
+                # Parse Overpass response
+                elements = data.get("elements", [])
+                restaurants = self._parse_restaurants(elements, preferences)
+
+                status = "OK" if restaurants else "ZERO_RESULTS"
+
+                return {
+                    "results": restaurants,
+                    "status": status
+                }
+
+            except httpx.TimeoutException as e:
+                last_error = f"Timeout from {server_url}: {str(e)}"
+                # Try next server
+                continue
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code in [429, 504, 503]:
+                    # Rate limit or server overload - try next server
+                    last_error = f"Server {server_url} unavailable: {e.response.status_code}"
+                    continue
+                else:
+                    # Other HTTP error - return immediately
+                    return {
+                        "results": [],
+                        "status": "ERROR",
+                        "error": str(e)
+                    }
+            except Exception as e:
+                last_error = str(e)
+                continue
+
+        # All servers failed
+        return {
+            "results": [],
+            "status": "ERROR",
+            "error": f"All Overpass servers failed. Last error: {last_error}"
+        }
     
     def _parse_restaurants(
         self,

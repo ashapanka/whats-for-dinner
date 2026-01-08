@@ -10,7 +10,8 @@ class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
     # Overpass API settings (no API key needed!)
-    overpass_api_url: str = "https://overpass-api.de/api/interpreter"
+    # Using faster alternative server by default
+    overpass_api_url: str = "https://overpass.kumi.systems/api/interpreter"
 
     model_config = SettingsConfigDict(
         env_file=".env",
