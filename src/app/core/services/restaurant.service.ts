@@ -1,44 +1,77 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
+/**
+ * Restaurant interface matching FastAPI backend response
+ */
 export interface Restaurant {
-  id: string;
   name: string;
-  address: string;
-  rating?: number;
-  priceLevel?: number;
-  isOpen?: boolean;
-  photoUrl?: string;
-  phoneNumber?: string;
+  place_id: string;
+  vicinity: string;
+  rating?: number | null;
+  types: string[];
+  user_ratings_total?: number | null;
+  price_level?: number | null;
+  opening_hours?: string | null;
 }
 
+/**
+ * Restaurant search response from FastAPI backend
+ */
 export interface RestaurantSearchResponse {
   restaurants: Restaurant[];
   status: string;
+  total_results: number;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RestaurantService {
   private readonly apiUrl = environment.backendApiUrl;
 
   constructor(private http: HttpClient) {}
 
-  findNearbyRestaurants(latitude: number, longitude: number, radius: number = 2000): Observable<RestaurantSearchResponse> {
-    const params = new HttpParams()
-      .set('latitude', latitude.toString())
-      .set('longitude', longitude.toString())
-      .set('radius', radius.toString());
+  /**
+   * Find nearby restaurants based on coordinates
+   * Uses POST request to send data in request body
+   */
+  findNearbyRestaurants(
+    latitude: number,
+    longitude: number,
+    radius: number = 1000,
+    preferences: string[] = [],
+  ): Observable<RestaurantSearchResponse> {
+    const body = {
+      latitude,
+      longitude,
+      radius,
+      preferences,
+    };
 
-    return this.http.get<RestaurantSearchResponse>(`${this.apiUrl}/restaurants/nearby`, { params });
+    return this.http.post<RestaurantSearchResponse>(`${this.apiUrl}/restaurants/search`, body);
   }
 
-  searchRestaurantsByLocation(location: string): Observable<RestaurantSearchResponse> {
-    const params = new HttpParams().set('location', location);
-    return this.http.get<RestaurantSearchResponse>(`${this.apiUrl}/restaurants/search`, { params });
+  /**
+   * Search restaurants by location string (requires geocoding on backend)
+   * Uses POST request to send data in request body
+   */
+  searchRestaurantsByLocation(
+    location: string,
+    radius: number = 1000,
+    preferences: string[] = [],
+  ): Observable<RestaurantSearchResponse> {
+    const body = {
+      location,
+      radius,
+      preferences,
+    };
+
+    return this.http.post<RestaurantSearchResponse>(
+      `${this.apiUrl}/restaurants/search-by-location`,
+      body,
+    );
   }
 }
-

@@ -99,7 +99,9 @@ describe('MealTakeoutComponent', () => {
     } as GeolocationPosition;
 
     geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
-    restaurantService.findNearbyRestaurants.and.returnValue(of({ restaurants: [], status: 'OK' }));
+    restaurantService.findNearbyRestaurants.and.returnValue(
+      of({ restaurants: [], status: 'OK', total_results: 0 }),
+    );
 
     fixture.detectChanges();
 
@@ -158,7 +160,9 @@ describe('MealTakeoutComponent', () => {
     } as GeolocationPosition;
 
     geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
-    restaurantService.findNearbyRestaurants.and.returnValue(of({ restaurants: [], status: 'OK' }));
+    restaurantService.findNearbyRestaurants.and.returnValue(
+      of({ restaurants: [], status: 'OK', total_results: 0 }),
+    );
 
     fixture.detectChanges();
 
