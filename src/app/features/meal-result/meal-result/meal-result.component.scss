@@ -1,33 +1,34 @@
-@import './../../../shared/shared-styles.scss';
+@use './../../../shared/shared-styles.scss';
 
 .suggestion-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  
+
   .name {
     font-size: 1.8rem;
     color: #1976d2;
     margin: 0 0 1rem 0;
     text-align: center;
   }
-  
+
   section {
     h3 {
       color: #333;
       margin: 0 0 0.5rem 0;
       font-size: 1.2rem;
     }
-    
+
     p {
       margin: 0;
       line-height: 1.6;
     }
-    
-    ul, ol {
+
+    ul,
+    ol {
       margin: 0;
       padding-left: 1.5rem;
-      
+
       li {
         margin-bottom: 0.5rem;
         line-height: 1.5;
