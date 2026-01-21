@@ -2,6 +2,7 @@
 Main FastAPI application module.
 """
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 
 from config import get_settings
 from models import Restaurant, RestaurantSearchRequest, RestaurantSearchResponse
@@ -11,6 +12,15 @@ app = FastAPI(
     title="What's for Dinner API",
     description="API for meal planning and recipe suggestions",
     version="0.1.0"
+)
+
+# Configure CORS to allow requests from Angular frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # Angular dev server
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
 
 
