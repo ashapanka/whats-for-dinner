@@ -10,7 +10,12 @@
     </div>
 
     <div class="action-section" *ngIf="!isLoading && restaurants.length === 0">
-      <button mat-raised-button color="primary" class="find-restaurants-button" (click)="findNearbyRestaurants()">
+      <button
+        mat-raised-button
+        color="primary"
+        class="find-restaurants-button"
+        (click)="findNearbyRestaurants()"
+      >
         Find Restaurants Near Me
       </button>
     </div>
@@ -28,7 +33,7 @@
       <form [formGroup]="locationForm" (ngSubmit)="searchByManualLocation()">
         <mat-form-field appearance="outline">
           <mat-label>Enter your location</mat-label>
-          <input matInput formControlName="manualLocation" placeholder="e.g., New York, NY">
+          <input matInput formControlName="manualLocation" placeholder="e.g., New York, NY" />
           <mat-error *ngIf="locationForm.get('manualLocation')?.hasError('required')">
             Location is required
           </mat-error>
@@ -43,26 +48,22 @@
     </div>
 
     <div class="restaurants-section" *ngIf="restaurants.length > 0 && !isLoading">
-      <h2>Nearby Restaurants</h2>
+      <h2>Nearby Restaurants ({{ restaurants.length }} found)</h2>
       <div class="restaurant-list">
         <div class="restaurant-card" *ngFor="let restaurant of restaurants">
           <h3>{{ restaurant.name }}</h3>
-          <p class="address">{{ restaurant.address }}</p>
+          <p class="address">{{ restaurant.vicinity }}</p>
           <div class="restaurant-details">
-            <span class="rating" *ngIf="restaurant.rating">
-              ⭐ {{ restaurant.rating }}
+            <span class="rating" *ngIf="restaurant.rating"> ⭐ {{ restaurant.rating }} </span>
+            <span class="price-level" *ngIf="restaurant.price_level">
+              {{ '$'.repeat(restaurant.price_level) }}
             </span>
-            <span class="price-level" *ngIf="restaurant.priceLevel">
-              {{ '$'.repeat(restaurant.priceLevel) }}
-            </span>
-            <span class="open-status" [class.open]="restaurant.isOpen" [class.closed]="restaurant.isOpen === false">
-              {{ restaurant.isOpen === true ? 'Open' : restaurant.isOpen === false ? 'Closed' : 'Hours unknown' }}
+            <span class="types" *ngIf="restaurant.types && restaurant.types.length > 0">
+              {{ restaurant.types.join(', ') }}
             </span>
           </div>
-          <div class="restaurant-actions">
-            <button mat-button color="primary" *ngIf="restaurant.phoneNumber">
-              Call {{ restaurant.phoneNumber }}
-            </button>
+          <div class="opening-hours" *ngIf="restaurant.opening_hours">
+            <small>Hours: {{ restaurant.opening_hours }}</small>
           </div>
         </div>
       </div>
@@ -72,9 +73,7 @@
     </div>
 
     <div class="back-section">
-      <button mat-button (click)="backToForm()">
-        ← Back to Meal Form
-      </button>
+      <button mat-button (click)="backToForm()">← Back to Meal Form</button>
     </div>
   </main>
 </div>
