@@ -29,10 +29,10 @@
       <p class="error-message">{{ errorMessage }}</p>
     </div>
 
-    <!-- API returns total_results: 0 -->
+    <!-- Show when search completed but found 0 restaurants -->
     <div
       class="error-section"
-      *ngIf="!isLoading && restaurants.length === 0 && errorMessage === null"
+      *ngIf="hasSearched && !isLoading && restaurants.length === 0 && !errorMessage"
     >
       <p class="error-message">No restaurants found.</p>
     </div>

@@ -33,6 +33,7 @@ export class MealTakeoutComponent implements OnInit {
   suggestions: any[] = [];
   restaurants: Restaurant[] = [];
   locationForm: FormGroup;
+  hasSearched = false; // Track if user has performed a search
 
   constructor(
     private router: Router,
@@ -55,6 +56,7 @@ export class MealTakeoutComponent implements OnInit {
     this.loadingMessage = 'Requesting location permission...';
     this.errorMessage = null;
     this.showManualLocationInput = false;
+    this.hasSearched = true; // Mark that a search has been initiated
 
     this.geolocationService.getCurrentPosition().subscribe({
       next: (position) => {
