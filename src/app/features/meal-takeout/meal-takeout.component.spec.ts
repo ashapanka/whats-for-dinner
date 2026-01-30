@@ -207,4 +207,38 @@ describe('MealTakeoutComponent', () => {
     component.backToForm();
     expect(router.navigate).toHaveBeenCalledWith(['/meal-form']);
   });
+
+  it('should display "No restaurants found." message when API returns 0 results', () => {
+    // Arrange
+    const mockPosition = {
+      coords: {
+        latitude: 40.7128,
+        longitude: -74.006,
+      },
+      timestamp: Date.now(),
+    } as GeolocationPosition;
+
+    geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
+    restaurantService.findNearbyRestaurants.and.returnValue(
+      of({ restaurants: [], status: 'OK', total_results: 0 }),
+    );
+
+    fixture.detectChanges();
+
+    // Act
+    const findButton = fixture.nativeElement.querySelector('.find-restaurants-button');
+    findButton.click();
+    fixture.detectChanges();
+
+    // Assert
+    const noRestaurantsMessage = fixture.nativeElement.querySelector('.error-message');
+    expect(noRestaurantsMessage).toBeTruthy();
+    expect(noRestaurantsMessage.textContent.trim()).toBe('No restaurants found.');
+  });
+
+  it('should not display "No restaurants found." message when user first arrives at the page', () => {
+    fixture.detectChanges();
+    const noRestaurantsMessage = fixture.nativeElement.querySelector('.error-message');
+    expect(noRestaurantsMessage).toBeFalsy();
+  });
 });

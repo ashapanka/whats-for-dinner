@@ -29,6 +29,14 @@
       <p class="error-message">{{ errorMessage }}</p>
     </div>
 
+    <!-- API returns total_results: 0 -->
+    <div
+      class="error-section"
+      *ngIf="!isLoading && restaurants.length === 0 && errorMessage === null"
+    >
+      <p class="error-message">No restaurants found.</p>
+    </div>
+
     <div class="manual-location-section" *ngIf="showManualLocationInput && !isLoading">
       <form [formGroup]="locationForm" (ngSubmit)="searchByManualLocation()">
         <mat-form-field appearance="outline">

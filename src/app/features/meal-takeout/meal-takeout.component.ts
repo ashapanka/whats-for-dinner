@@ -42,7 +42,7 @@ export class MealTakeoutComponent implements OnInit {
     public sharedDataService: SharedDataService,
   ) {
     this.locationForm = this.formBuilder.group({
-      manualLocation: ['', [Validators.required, Validators.minLength(2)]]
+      manualLocation: ['', [Validators.required, Validators.minLength(2)]],
     });
   }
 
@@ -61,7 +61,9 @@ export class MealTakeoutComponent implements OnInit {
         this.loadingMessage = 'Finding nearby restaurants...';
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
-        
+
+        console.log('Searching at coordinates:', { latitude, longitude });
+
         this.restaurantService.findNearbyRestaurants(latitude, longitude).subscribe({
           next: (response) => {
             console.log('Restaurant search response:', response);
@@ -73,15 +75,16 @@ export class MealTakeoutComponent implements OnInit {
             this.isLoading = false;
             this.errorMessage = 'Failed to find restaurants. Please try again.';
             console.error('Restaurant search error:', error);
-          }
+          },
         });
       },
       error: (error) => {
         this.isLoading = false;
         this.showManualLocationInput = true;
-        this.errorMessage = 'We need your location to find nearby restaurants. Please enter your location manually or enable location permissions.';
+        this.errorMessage =
+          'We need your location to find nearby restaurants. Please enter your location manually or enable location permissions.';
         console.error('Geolocation error:', error);
-      }
+      },
     });
   }
 
@@ -90,9 +93,9 @@ export class MealTakeoutComponent implements OnInit {
       this.isLoading = true;
       this.loadingMessage = 'Searching restaurants...';
       this.errorMessage = null;
-      
+
       const location = this.locationForm.value.manualLocation;
-      
+
       this.restaurantService.searchRestaurantsByLocation(location).subscribe({
         next: (response) => {
           this.isLoading = false;
@@ -101,9 +104,10 @@ export class MealTakeoutComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = 'Failed to find restaurants at that location. Please try a different location.';
+          this.errorMessage =
+            'Failed to find restaurants at that location. Please try a different location.';
           console.error('Location search error:', error);
-        }
+        },
       });
     }
   }
