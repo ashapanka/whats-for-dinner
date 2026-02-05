@@ -94,7 +94,7 @@
         <button mat-raised-button color="primary" type="submit" [disabled]="!mealForm.valid">
           <span *ngIf="!isSubmitting">Get Recipe Suggestions</span>
           <span *ngIf="isSubmitting">
-            <mat-spinner diameter="20"></mat-spinner>
+            <mat-spinner></mat-spinner>
             Generating...
           </span>
         </button>
