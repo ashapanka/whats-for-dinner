@@ -216,7 +216,7 @@ describe('MealResultComponent', () => {
     fixture.detectChanges();
 
     // Assert
-    const pickyEaterSection = fixture.nativeElement.querySelector('.picky-eater-section');
+    const pickyEaterSection = fixture.nativeElement.querySelector('.highlight-section');
     expect(pickyEaterSection).toBeFalsy();
   });
 
