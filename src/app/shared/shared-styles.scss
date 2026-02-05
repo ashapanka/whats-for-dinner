@@ -27,31 +27,31 @@
 .error-message {
   background-color: $error-bg;
   border: 1px solid $error-border;
-  border-radius: 4px;
-  padding: 1rem;
+  border-radius: $border-radius-sm;
+  padding: $spacing-sm;
   color: $error-text;
   text-align: center;
-  margin: 1rem 0;
+  margin: $spacing-sm 0;
 }
 
 // Highlighted section styles
 .highlight-section {
   background-color: $highlight-bg;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: $border-radius-md;
+  padding: $spacing-sm;
   border-left: 4px solid $highlight-border;
-  margin-bottom: 1rem;
+  margin-bottom: $spacing-sm;
 }
 
 .loading-section {
   text-align: center;
-  padding: 2rem;
+  padding: $spacing-lg;
 }
 
 // Form styles
 .form-row {
   display: flex;
-  gap: 1rem;
+  gap: $spacing-sm;
 }
 
 .form-row mat-form-field {
@@ -60,32 +60,32 @@
 
 .form-actions {
   text-align: center;
-  margin-top: 1rem;
+  margin-top: $spacing-sm;
 }
 
 .submit-error {
   color: $error-text;
   text-align: center;
-  margin-top: 0.5rem;
+  margin-top: $spacing-xs;
 }
 
 // Fieldset styles
 .dietary-restrictions-fieldset,
 .picky-eaters-fieldset {
   border: 1px solid $border-gray;
-  border-radius: 4px;
-  padding: 1rem;
-  margin: 1rem 0;
+  border-radius: $border-radius-sm;
+  padding: $spacing-sm;
+  margin: $spacing-sm 0;
 }
 
 .checkbox-group {
-  margin-bottom: 0.5rem;
+  margin-bottom: $spacing-xs;
 }
 
 // Responsive design
 @media (max-width: 768px) {
   .container {
-    padding: 0.5rem;
+    padding: $spacing-xs;
   }
 
   .form-row {
