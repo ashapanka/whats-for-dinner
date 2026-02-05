@@ -5,6 +5,23 @@
   text-align: center;
 }
 
+.search-context {
+  background-color: $highlight-bg;
+  border-left: 4px solid $highlight-border;
+  padding: $spacing-sm $spacing-md;
+  margin: $spacing-md 0;
+  border-radius: $border-radius-sm;
+
+  p {
+    margin: $spacing-xs 0;
+    color: $text-gray;
+
+    strong {
+      color: #333;
+    }
+  }
+}
+
 .search-again-button {
   margin-bottom: $spacing-lg;
 }

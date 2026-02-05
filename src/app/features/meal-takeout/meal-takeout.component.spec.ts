@@ -174,6 +174,8 @@ describe('MealTakeoutComponent', () => {
     expect(restaurantService.findNearbyRestaurants).toHaveBeenCalledWith(
       mockPosition.coords.latitude,
       mockPosition.coords.longitude,
+      5000, // 5km radius for better results
+      [], // empty preferences when no form data
     );
   });
 
@@ -240,5 +242,82 @@ describe('MealTakeoutComponent', () => {
     fixture.detectChanges();
     const noRestaurantsMessage = fixture.nativeElement.querySelector('.error-message');
     expect(noRestaurantsMessage).toBeFalsy();
+  });
+
+  it('should pass only dietary restrictions as preferences (not ingredients)', () => {
+    // Arrange
+    const mockPosition = {
+      coords: {
+        latitude: 40.7128,
+        longitude: -74.006,
+      },
+      timestamp: Date.now(),
+    } as GeolocationPosition;
+
+    // Set form data with ingredients and dietary restrictions
+    sharedDataService.mealFormData = {
+      ingredients: 'beans, pasta, tomatoes',
+      dietaryRestrictions: {
+        vegetarian: true,
+        glutenFree: false,
+      },
+    };
+
+    geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
+    restaurantService.findNearbyRestaurants.and.returnValue(
+      of({ restaurants: [], status: 'OK', total_results: 0 }),
+    );
+
+    fixture.detectChanges();
+
+    // Act
+    const findButton = fixture.nativeElement.querySelector('.find-restaurants-button');
+    findButton.click();
+
+    // Assert
+    // Should only pass dietary restrictions, NOT ingredients
+    // Ingredients are shown as context, not used as filters
+    expect(restaurantService.findNearbyRestaurants).toHaveBeenCalledWith(
+      mockPosition.coords.latitude,
+      mockPosition.coords.longitude,
+      5000, // 5km radius for better results
+      ['vegetarian'], // Only dietary restrictions, not ingredients
+    );
+  });
+
+  it('should handle empty ingredients gracefully', () => {
+    // Arrange
+    const mockPosition = {
+      coords: {
+        latitude: 40.7128,
+        longitude: -74.006,
+      },
+      timestamp: Date.now(),
+    } as GeolocationPosition;
+
+    // Set form data with no ingredients
+    sharedDataService.mealFormData = {
+      ingredients: '',
+      dietaryRestrictions: {},
+    };
+
+    geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
+    restaurantService.findNearbyRestaurants.and.returnValue(
+      of({ restaurants: [], status: 'OK', total_results: 0 }),
+    );
+
+    fixture.detectChanges();
+
+    // Act
+    const findButton = fixture.nativeElement.querySelector('.find-restaurants-button');
+    findButton.click();
+
+    // Assert
+    expect(restaurantService.findNearbyRestaurants).toHaveBeenCalledWith(
+      mockPosition.coords.latitude,
+      mockPosition.coords.longitude,
+      5000, // 5km radius for better results
+      [], // empty preferences
+    );
   });
 });

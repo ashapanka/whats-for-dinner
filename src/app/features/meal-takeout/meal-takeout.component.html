@@ -58,6 +58,18 @@
     <div class="restaurants-section" *ngIf="restaurants.length > 0 && !isLoading">
       <h2>Nearby Restaurants ({{ restaurants.length }} found)</h2>
 
+      <div
+        class="search-context"
+        *ngIf="getIngredientsDisplay() || getDietaryRestrictionsDisplay().length > 0"
+      >
+        <p *ngIf="getIngredientsDisplay()">
+          <strong>Looking for:</strong> {{ getIngredientsDisplay() }}
+        </p>
+        <p *ngIf="getDietaryRestrictionsDisplay().length > 0">
+          <strong>Filtered by:</strong> {{ getDietaryRestrictionsDisplay().join(', ') }}
+        </p>
+      </div>
+
       <button
         mat-raised-button
         color="primary"
