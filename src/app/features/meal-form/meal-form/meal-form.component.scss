@@ -1,4 +1,5 @@
-@use './../../../shared/shared-styles.scss';
+@use './../../../shared/variables' as *;
+@import './../../../shared/shared-styles.scss';
 
 .meal-form {
   display: flex;
@@ -19,7 +20,7 @@
 
 .dietary-restrictions-fieldset,
 .picky-eaters-fieldset {
-  border: 1px solid #ddd;
+  border: 1px solid $border-gray;
   border-radius: 4px;
   padding: 1rem;
   margin: 0;
@@ -36,7 +37,7 @@
 }
 
 .submit-error {
-  color: #d32f2f;
+  color: $error-text;
   text-align: center;
   margin-top: 0.5rem;
 }

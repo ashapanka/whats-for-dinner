@@ -1,42 +1,45 @@
+// Import variables
+@use './variables' as *;
+
 // Shared container and layout styles
 .container {
   max-width: 800px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: $spacing-sm;
 }
 
 .page-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: $spacing-lg;
 
   h1 {
-    margin: 0 0 0.5rem 0;
-    color: #1976d2;
+    margin: 0 0 $spacing-xs 0;
+    color: $primary-blue;
   }
 
   p {
     margin: 0;
-    color: #666;
+    color: $text-gray;
   }
 }
 
 // Error and loading states
 .error-message {
-  background-color: #ffebee;
-  border: 1px solid #ffcdd2;
+  background-color: $error-bg;
+  border: 1px solid $error-border;
   border-radius: 4px;
   padding: 1rem;
-  color: #d32f2f;
+  color: $error-text;
   text-align: center;
   margin: 1rem 0;
 }
 
 // Highlighted section styles
 .highlight-section {
-  background-color: #f3e5f5;
+  background-color: $highlight-bg;
   border-radius: 8px;
   padding: 1rem;
-  border-left: 4px solid #9c27b0;
+  border-left: 4px solid $highlight-border;
   margin-bottom: 1rem;
 }
 
@@ -61,7 +64,7 @@
 }
 
 .submit-error {
-  color: #d32f2f;
+  color: $error-text;
   text-align: center;
   margin-top: 0.5rem;
 }
@@ -69,7 +72,7 @@
 // Fieldset styles
 .dietary-restrictions-fieldset,
 .picky-eaters-fieldset {
-  border: 1px solid #ddd;
+  border: 1px solid $border-gray;
   border-radius: 4px;
   padding: 1rem;
   margin: 1rem 0;

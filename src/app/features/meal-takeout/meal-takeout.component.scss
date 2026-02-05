@@ -1,4 +1,5 @@
-@use './../../shared/shared-styles.scss';
+@use './../../shared/variables' as *;
+@import './../../shared/shared-styles.scss';
 
 .takeout-explanation {
   text-align: center;
