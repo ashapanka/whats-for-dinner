@@ -57,6 +57,16 @@
 
     <div class="restaurants-section" *ngIf="restaurants.length > 0 && !isLoading">
       <h2>Nearby Restaurants ({{ restaurants.length }} found)</h2>
+
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="findNearbyRestaurants()"
+        class="search-again-button"
+      >
+        Search Again
+      </button>
+
       <div class="restaurant-list">
         <div class="restaurant-card" *ngFor="let restaurant of restaurants">
           <h3>{{ restaurant.name }}</h3>
@@ -75,9 +85,6 @@
           </div>
         </div>
       </div>
-      <button mat-button (click)="findNearbyRestaurants()" class="search-again-button">
-        Search Again
-      </button>
     </div>
 
     <div class="back-section">
