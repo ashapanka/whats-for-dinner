@@ -339,6 +339,130 @@ describe('MealFormComponent', () => {
       expect(sharedDataService.mealPrompt).toContain('DO NOT include');
       expect(sharedDataService.mealPrompt).toContain('no shellfish');
     });
+
+    it('should include cuisine preferences when selected', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice',
+        cuisinePreferences: ['Italian', 'Mexican'],
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false,
+        },
+        pickyEaters: false,
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('Focuses on these cuisines');
+      expect(sharedDataService.mealPrompt).toContain('Italian, Mexican');
+    });
+
+    it('should not include cuisine preferences line when none are selected', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice',
+        cuisinePreferences: [],
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false,
+        },
+        pickyEaters: false,
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).not.toContain('Focuses on these cuisines');
+    });
+
+    it('should include both cuisine preferences and dietary restrictions', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '45',
+        numberOfPeople: 2,
+        ingredients: 'pasta, tomatoes',
+        cuisinePreferences: ['Italian'],
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: true,
+          peanutAllergy: false,
+          other: false,
+        },
+        pickyEaters: false,
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('Focuses on these cuisines: Italian');
+      expect(sharedDataService.mealPrompt).toContain('dietary restrictions: vegetarian');
+    });
+
+    it('should handle multiple cuisine preferences correctly', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '60',
+        numberOfPeople: 6,
+        ingredients: 'beef, vegetables',
+        cuisinePreferences: ['Chinese', 'Thai', 'Vietnamese'],
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false,
+        },
+        pickyEaters: false,
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('Focuses on these cuisines');
+      expect(sharedDataService.mealPrompt).toContain('Chinese, Thai, Vietnamese');
+    });
+
+    it('should include cuisine preferences with picky eaters option', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '30',
+        numberOfPeople: 3,
+        ingredients: 'chicken',
+        cuisinePreferences: ['American'],
+        dietaryRestrictions: {
+          glutenFree: false,
+          dairyFree: false,
+          vegetarian: false,
+          peanutAllergy: false,
+          other: false,
+        },
+        pickyEaters: true,
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealPrompt).toContain('Focuses on these cuisines: American');
+      expect(sharedDataService.mealPrompt).toContain('picky eaters');
+    });
   });
 
   it('should navigate to meal-result on valid form submission', () => {

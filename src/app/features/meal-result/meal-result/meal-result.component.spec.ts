@@ -234,4 +234,205 @@ describe('MealResultComponent', () => {
     // Assert
     expect(router.navigate).toHaveBeenCalledWith(['/meal-form']);
   });
+
+  // Cuisine Preferences Tests
+  describe('Cuisine Preferences Integration', () => {
+    it('should include cuisine preferences in the prompt when provided', () => {
+      // Arrange
+      sharedDataService.mealFormData = {
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice',
+        cuisinePreferences: ['Italian', 'Mexican'],
+        dietaryRestrictions: {},
+        pickyEaters: false,
+      };
+
+      // Build the expected prompt with cuisine preferences
+      const expectedPromptPart = 'Italian, Mexican';
+
+      // Act
+      // Simulate the meal-form component creating the prompt
+      const prompt = `Suggest a dinner recipe that:
+- Takes about 30 minutes to prepare
+- Serves 4 people
+- Uses some of these ingredients: chicken, rice
+- Focuses on these cuisines: Italian, Mexican
+
+IMPORTANT: If "no eggs" or similar restriction is specified, DO NOT include eggs or that ingredient in any form in the recipe.
+
+Please return your response in the following JSON format:
+{
+  "name": "Recipe Name",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2", "..."],
+  "preparationSteps": ["step 1", "step 2", "..."],
+  "cookingTime": "Total cooking time"
+}`;
+
+      sharedDataService.mealPrompt = prompt;
+      fixture.detectChanges();
+
+      // Assert
+      expect(llmGroqServiceSpy.getMealSuggestions).toHaveBeenCalledWith(
+        jasmine.stringContaining(expectedPromptPart),
+      );
+    });
+
+    it('should not include cuisine preferences line when none are selected', () => {
+      // Arrange
+      sharedDataService.mealFormData = {
+        timeAvailable: '30',
+        numberOfPeople: 4,
+        ingredients: 'chicken, rice',
+        cuisinePreferences: [],
+        dietaryRestrictions: {},
+        pickyEaters: false,
+      };
+
+      // Build the expected prompt without cuisine preferences
+      const prompt = `Suggest a dinner recipe that:
+- Takes about 30 minutes to prepare
+- Serves 4 people
+- Uses some of these ingredients: chicken, rice
+
+IMPORTANT: If "no eggs" or similar restriction is specified, DO NOT include eggs or that ingredient in any form in the recipe.
+
+Please return your response in the following JSON format:
+{
+  "name": "Recipe Name",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2", "..."],
+  "preparationSteps": ["step 1", "step 2", "..."],
+  "cookingTime": "Total cooking time"
+}`;
+
+      sharedDataService.mealPrompt = prompt;
+      fixture.detectChanges();
+
+      // Assert
+      expect(llmGroqServiceSpy.getMealSuggestions).toHaveBeenCalled();
+      const calledPrompt = llmGroqServiceSpy.getMealSuggestions.calls.mostRecent().args[0];
+      expect(calledPrompt).not.toContain('Focuses on these cuisines');
+    });
+
+    it('should include both cuisine preferences and dietary restrictions in the prompt', () => {
+      // Arrange
+      sharedDataService.mealFormData = {
+        timeAvailable: '45',
+        numberOfPeople: 2,
+        ingredients: 'pasta, tomatoes',
+        cuisinePreferences: ['Italian'],
+        dietaryRestrictions: {
+          vegetarian: true,
+          glutenFree: false,
+        },
+        pickyEaters: false,
+      };
+
+      // Build the expected prompt with both cuisine and dietary restrictions
+      const prompt = `Suggest a dinner recipe that:
+- Takes about 45 minutes to prepare
+- Serves 2 people
+- Uses some of these ingredients: pasta, tomatoes
+- Focuses on these cuisines: Italian
+- Accommodates these dietary restrictions: vegetarian
+
+IMPORTANT: If "no eggs" or similar restriction is specified, DO NOT include eggs or that ingredient in any form in the recipe.
+
+Please return your response in the following JSON format:
+{
+  "name": "Recipe Name",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2", "..."],
+  "preparationSteps": ["step 1", "step 2", "..."],
+  "cookingTime": "Total cooking time"
+}`;
+
+      sharedDataService.mealPrompt = prompt;
+      fixture.detectChanges();
+
+      // Assert
+      const calledPrompt = llmGroqServiceSpy.getMealSuggestions.calls.mostRecent().args[0];
+      expect(calledPrompt).toContain('Italian');
+      expect(calledPrompt).toContain('vegetarian');
+    });
+
+    it('should handle multiple cuisine preferences correctly', () => {
+      // Arrange
+      sharedDataService.mealFormData = {
+        timeAvailable: '60',
+        numberOfPeople: 6,
+        ingredients: 'beef, vegetables',
+        cuisinePreferences: ['Chinese', 'Thai', 'Vietnamese'],
+        dietaryRestrictions: {},
+        pickyEaters: false,
+      };
+
+      // Build the expected prompt with multiple cuisines
+      const prompt = `Suggest a dinner recipe that:
+- Takes about 60 minutes to prepare
+- Serves 6 people
+- Uses some of these ingredients: beef, vegetables
+- Focuses on these cuisines: Chinese, Thai, Vietnamese
+
+IMPORTANT: If "no eggs" or similar restriction is specified, DO NOT include eggs or that ingredient in any form in the recipe.
+
+Please return your response in the following JSON format:
+{
+  "name": "Recipe Name",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2", "..."],
+  "preparationSteps": ["step 1", "step 2", "..."],
+  "cookingTime": "Total cooking time"
+}`;
+
+      sharedDataService.mealPrompt = prompt;
+      fixture.detectChanges();
+
+      // Assert
+      const calledPrompt = llmGroqServiceSpy.getMealSuggestions.calls.mostRecent().args[0];
+      expect(calledPrompt).toContain('Chinese, Thai, Vietnamese');
+    });
+
+    it('should include cuisine preferences with picky eaters option', () => {
+      // Arrange
+      sharedDataService.mealFormData = {
+        timeAvailable: '30',
+        numberOfPeople: 3,
+        ingredients: 'chicken',
+        cuisinePreferences: ['American'],
+        dietaryRestrictions: {},
+        pickyEaters: true,
+      };
+
+      // Build the expected prompt with cuisine and picky eaters
+      const prompt = `Suggest a dinner recipe that:
+- Takes about 30 minutes to prepare
+- Serves 3 people
+- Uses some of these ingredients: chicken
+- Focuses on these cuisines: American
+- Include tips for picky eaters
+
+IMPORTANT: If "no eggs" or similar restriction is specified, DO NOT include eggs or that ingredient in any form in the recipe.
+
+Please return your response in the following JSON format:
+{
+  "name": "Recipe Name",
+  "description": "Brief description of the dish",
+  "ingredients": ["ingredient 1", "ingredient 2", "..."],
+  "preparationSteps": ["step 1", "step 2", "..."],
+  "cookingTime": "Total cooking time",
+  "pickyEaterTips": "Tips for picky eaters"
+}`;
+
+      sharedDataService.mealPrompt = prompt;
+      fixture.detectChanges();
+
+      // Assert
+      const calledPrompt = llmGroqServiceSpy.getMealSuggestions.calls.mostRecent().args[0];
+      expect(calledPrompt).toContain('American');
+      expect(calledPrompt).toContain('picky eaters');
+    });
+  });
 });

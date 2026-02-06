@@ -195,6 +195,12 @@ export class MealFormComponent {
   private createMealPrompt(): void {
     const formData = this.mealForm.value;
 
+    // Build cuisine preferences string
+    let cuisinePreferences = '';
+    if (formData.cuisinePreferences && formData.cuisinePreferences.length > 0) {
+      cuisinePreferences = formData.cuisinePreferences.join(', ');
+    }
+
     // Build dietary restrictions string
     let dietaryRestrictions = '';
     if (formData.dietaryRestrictions) {
@@ -218,6 +224,7 @@ export class MealFormComponent {
 - Takes about ${formData.timeAvailable} minutes to prepare
 - Serves ${formData.numberOfPeople} people
 - Uses some of these ingredients: ${formData.ingredients}
+${cuisinePreferences ? '- Focuses on these cuisines: ' + cuisinePreferences : ''}
 ${dietaryRestrictions ? '- Accommodates these dietary restrictions: ' + dietaryRestrictions : ''}
 ${formData.pickyEaters ? '- Include tips for picky eaters' : ''}
 
