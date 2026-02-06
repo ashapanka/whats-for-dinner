@@ -57,9 +57,9 @@ def test_real_overpass_api_user_location(client):
     """
     Integration test: Test with coordinates that might be failing.
     Use this to test YOUR actual location coordinates.
-    
+
     Run with: pytest tests/test_integration.py::test_real_overpass_api_user_location -v -s
-    
+
     REPLACE the latitude/longitude below with the coordinates from your browser console!
     """
     # TODO: Replace these with the coordinates from your browser console
@@ -72,13 +72,13 @@ def test_real_overpass_api_user_location(client):
             "preferences": []
         }
     )
-    
+
     print(f"\nStatus Code: {response.status_code}")
     data = response.json()
     print(f"Response: {data}")
     print(f"Total Results: {data.get('total_results', 0)}")
     print(f"Status: {data.get('status')}")
-    
+
     if data.get('restaurants'):
         print(f"\nRestaurants found:")
         for restaurant in data['restaurants']:
@@ -89,8 +89,48 @@ def test_real_overpass_api_user_location(client):
         print("  1. There really are no restaurants within 1000m")
         print("  2. The Overpass API is having issues")
         print("  3. The coordinates are incorrect")
-    
+
     assert response.status_code == status.HTTP_200_OK
     assert "restaurants" in data
     assert "status" in data
+
+
+@pytest.mark.integration
+def test_max_results_limit(client):
+    """
+    Integration test: Verify that the API returns a maximum of 10 restaurants.
+    This tests Bug Fix #2 - preventing overwhelming users with too many results.
+
+    Run with: pytest tests/test_integration.py::test_max_results_limit -v -s
+    """
+    response = client.post(
+        "/api/restaurants/search",
+        json={
+            "latitude": 40.7580,  # Times Square, NYC - high density area
+            "longitude": -73.9855,
+            "radius": 5000,  # Large radius to ensure many results
+            "preferences": []  # No filters to get maximum results
+        }
+    )
+
+    print(f"\nStatus Code: {response.status_code}")
+    data = response.json()
+    print(f"Total Results: {data.get('total_results', 0)}")
+    print(f"Status: {data.get('status')}")
+
+    if data.get('restaurants'):
+        print(f"\nNumber of restaurants returned: {len(data['restaurants'])}")
+        print(f"Restaurant names:")
+        for i, restaurant in enumerate(data['restaurants'], 1):
+            print(f"  {i}. {restaurant['name']}")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert "restaurants" in data
+    assert "total_results" in data
+
+    # Bug Fix #2: Maximum of 10 restaurants should be returned
+    assert len(data["restaurants"]) <= 10, f"Expected max 10 restaurants, got {len(data['restaurants'])}"
+    assert data["total_results"] <= 10, f"Expected total_results <= 10, got {data['total_results']}"
+
+    print(f"\n✅ PASS: Maximum results limit enforced (returned {len(data['restaurants'])} restaurants)")
 

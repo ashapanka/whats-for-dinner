@@ -111,31 +111,37 @@ class RestaurantService:
     def _parse_restaurants(
         self,
         elements: list[dict],
-        preferences: Optional[list[str]] = None
+        preferences: Optional[list[str]] = None,
+        max_results: int = 10
     ) -> list[dict]:
         """
         Parse Overpass API elements into restaurant objects.
-        
+
         Args:
             elements: List of OSM elements from Overpass API
             preferences: Optional list of cuisine preferences to filter by
-        
+            max_results: Maximum number of restaurants to return (default: 10)
+
         Returns:
-            List of restaurant dictionaries
+            List of restaurant dictionaries (limited to max_results)
         """
         restaurants = []
-        
+
         for element in elements:
+            # Stop if we've reached the maximum number of results
+            if len(restaurants) >= max_results:
+                break
+
             # Only process nodes and ways (not relations)
             if element.get("type") not in ["node", "way"]:
                 continue
-            
+
             tags = element.get("tags", {})
-            
+
             # Skip if no name
             if "name" not in tags:
                 continue
-            
+
             # Extract restaurant data
             restaurant = {
                 "name": tags.get("name", "Unknown"),
@@ -150,13 +156,13 @@ class RestaurantService:
                 "phone": tags.get("phone"),
                 "website": tags.get("website"),
             }
-            
+
             # Filter by preferences if provided
             if preferences and not self._matches_preferences(restaurant, preferences):
                 continue
-            
+
             restaurants.append(restaurant)
-        
+
         return restaurants
     
     def _build_address(self, tags: dict) -> str:

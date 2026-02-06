@@ -419,4 +419,130 @@ describe('MealFormComponent', () => {
     // Assert
     expect(router.navigate).not.toHaveBeenCalledWith(['/meal-takeout']);
   });
+
+  // Cuisine Preferences Tests
+  describe('Cuisine Preferences', () => {
+    it('should have cuisinePreferences form control', () => {
+      expect(component.mealForm.get('cuisinePreferences')).toBeTruthy();
+    });
+
+    it('should initialize cuisinePreferences as empty array', () => {
+      expect(component.mealForm.get('cuisinePreferences')?.value).toEqual([]);
+    });
+
+    it('should have availableCuisines array with common cuisines', () => {
+      expect(component.availableCuisines).toBeDefined();
+      expect(component.availableCuisines.length).toBeGreaterThan(0);
+      expect(component.availableCuisines).toContain('Italian');
+      expect(component.availableCuisines).toContain('Mexican');
+      expect(component.availableCuisines).toContain('Chinese');
+      expect(component.availableCuisines).toContain('Thai');
+      expect(component.availableCuisines).toContain('Japanese');
+      expect(component.availableCuisines).toContain('Indian');
+    });
+
+    it('should display cuisine preferences section in template', () => {
+      const cuisineSection = fixture.nativeElement.querySelector('.cuisine-preferences');
+      expect(cuisineSection).toBeTruthy();
+    });
+
+    it('should display mat-chip-listbox for cuisine selection', () => {
+      const chipListbox = fixture.nativeElement.querySelector(
+        'mat-chip-listbox[formControlName="cuisinePreferences"]',
+      );
+      expect(chipListbox).toBeTruthy();
+    });
+
+    it('should display all available cuisines as chips', () => {
+      const chips = fixture.nativeElement.querySelectorAll('mat-chip-option');
+      expect(chips.length).toBeGreaterThanOrEqual(component.availableCuisines.length);
+    });
+
+    it('should toggle cuisine selection when chip is clicked', () => {
+      // Arrange
+      const initialValue = component.mealForm.get('cuisinePreferences')?.value || [];
+      expect(initialValue).toEqual([]);
+
+      // Act - Select Italian using patchValue (simulates Angular Material chip selection)
+      component.mealForm.patchValue({ cuisinePreferences: ['Italian'] });
+
+      // Assert
+      expect(component.mealForm.get('cuisinePreferences')?.value).toContain('Italian');
+    });
+
+    it('should remove cuisine when toggled again', () => {
+      // Arrange - First add Italian
+      component.mealForm.patchValue({ cuisinePreferences: ['Italian'] });
+      expect(component.mealForm.get('cuisinePreferences')?.value).toContain('Italian');
+
+      // Act - Toggle Italian again to remove (simulates deselecting chip)
+      component.mealForm.patchValue({ cuisinePreferences: [] });
+
+      // Assert
+      expect(component.mealForm.get('cuisinePreferences')?.value).not.toContain('Italian');
+    });
+
+    it('should allow multiple cuisine selections', () => {
+      // Act - Select multiple cuisines using patchValue
+      component.mealForm.patchValue({ cuisinePreferences: ['Italian', 'Mexican', 'Chinese'] });
+
+      // Assert
+      const selected = component.mealForm.get('cuisinePreferences')?.value;
+      expect(selected).toContain('Italian');
+      expect(selected).toContain('Mexican');
+      expect(selected).toContain('Chinese');
+      expect(selected.length).toBe(3);
+    });
+
+    it('should include cuisinePreferences in form data when submitting', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '5',
+        numberOfPeople: 2,
+        ingredients: 'pasta, tomatoes',
+        cuisinePreferences: ['Italian', 'Mexican'],
+        dietaryRestrictions: {
+          vegetarian: true,
+        },
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealFormData.cuisinePreferences).toEqual(['Italian', 'Mexican']);
+    });
+
+    it('should handle empty cuisine preferences when submitting', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '5',
+        numberOfPeople: 2,
+        ingredients: 'pasta',
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(sharedDataService.mealFormData.cuisinePreferences).toEqual([]);
+    });
+
+    it('should navigate to meal-takeout with cuisine preferences', () => {
+      // Arrange
+      component.mealForm.patchValue({
+        timeAvailable: '5',
+        numberOfPeople: 2,
+        ingredients: 'tacos',
+        cuisinePreferences: ['Mexican'],
+      });
+
+      // Act
+      component.onSubmit();
+
+      // Assert
+      expect(router.navigate).toHaveBeenCalledWith(['/meal-takeout']);
+      expect(sharedDataService.mealFormData.cuisinePreferences).toEqual(['Mexican']);
+    });
+  });
 });

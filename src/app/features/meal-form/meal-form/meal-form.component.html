@@ -55,6 +55,20 @@
         <mat-error *ngIf="isFieldInvalid('ingredients')">Please list ingredients</mat-error>
       </mat-form-field>
 
+      <fieldset class="cuisine-preferences">
+        <legend>Cuisine Preferences (Optional)</legend>
+        <p class="cuisine-help-text">Select cuisines you're interested in:</p>
+        <mat-chip-listbox
+          formControlName="cuisinePreferences"
+          multiple
+          aria-label="Cuisine selection"
+        >
+          <mat-chip-option *ngFor="let cuisine of availableCuisines" [value]="cuisine">
+            {{ cuisine }}
+          </mat-chip-option>
+        </mat-chip-listbox>
+      </fieldset>
+
       <fieldset class="dietary-restrictions-fieldset">
         <legend>Dietary Restrictions (Optional)</legend>
         <div formGroupName="dietaryRestrictions">

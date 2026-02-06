@@ -18,12 +18,31 @@
   flex: 1;
 }
 
+.cuisine-preferences,
 .dietary-restrictions-fieldset,
 .picky-eaters-fieldset {
   border: 1px solid $border-gray;
   border-radius: $border-radius-sm;
   padding: $spacing-sm;
   margin: 0;
+}
+
+.cuisine-preferences {
+  .cuisine-help-text {
+    margin: 0 0 $spacing-sm 0;
+    color: $text-gray;
+    font-size: 0.9rem;
+  }
+
+  mat-chip-listbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+  }
+
+  mat-chip-option {
+    cursor: pointer;
+  }
 }
 
 .checkbox-group {

@@ -60,13 +60,20 @@
 
       <div
         class="search-context"
-        *ngIf="getIngredientsDisplay() || getDietaryRestrictionsDisplay().length > 0"
+        *ngIf="
+          getIngredientsDisplay() ||
+          getCuisinePreferencesDisplay().length > 0 ||
+          getDietaryRestrictionsDisplay().length > 0
+        "
       >
         <p *ngIf="getIngredientsDisplay()">
           <strong>Looking for:</strong> {{ getIngredientsDisplay() }}
         </p>
+        <p *ngIf="getCuisinePreferencesDisplay().length > 0">
+          <strong>Cuisine:</strong> {{ getCuisinePreferencesDisplay().join(', ') }}
+        </p>
         <p *ngIf="getDietaryRestrictionsDisplay().length > 0">
-          <strong>Filtered by:</strong> {{ getDietaryRestrictionsDisplay().join(', ') }}
+          <strong>Dietary:</strong> {{ getDietaryRestrictionsDisplay().join(', ') }}
         </p>
       </div>
 

@@ -11,6 +11,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule } from '@angular/material/chips';
 import { SharedDataService } from '../../../core/services/shared-data.service';
 
 @Component({
@@ -26,6 +27,7 @@ import { SharedDataService } from '../../../core/services/shared-data.service';
     MatCheckboxModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatChipsModule,
   ],
   templateUrl: './meal-form.component.html',
   styleUrl: './meal-form.component.scss',
@@ -33,6 +35,21 @@ import { SharedDataService } from '../../../core/services/shared-data.service';
 export class MealFormComponent {
   mealForm: FormGroup;
   isSubmitting = false;
+
+  // Available cuisines for selection
+  availableCuisines = [
+    'Italian',
+    'Mexican',
+    'Chinese',
+    'Thai',
+    'Japanese',
+    'Indian',
+    'American',
+    'Greek',
+    'Vietnamese',
+    'Korean',
+    'Mediterranean',
+  ];
 
   constructor(
     private router: Router,
@@ -44,6 +61,7 @@ export class MealFormComponent {
       timeAvailable: ['', Validators.required],
       numberOfPeople: [null, [Validators.required, Validators.min(1)]],
       ingredients: ['', Validators.required],
+      cuisinePreferences: [[]],
       dietaryRestrictions: this.fb.group({
         glutenFree: [false],
         dairyFree: [false],

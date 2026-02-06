@@ -107,7 +107,13 @@ export class MealTakeoutComponent implements OnInit {
     const preferences: string[] = [];
 
     if (this.sharedDataService.mealFormData) {
-      // Only extract dietary restrictions (NOT ingredients)
+      // Extract cuisine preferences first
+      const cuisinePrefs = this.sharedDataService.mealFormData.cuisinePreferences;
+      if (cuisinePrefs && cuisinePrefs.length > 0) {
+        preferences.push(...cuisinePrefs);
+      }
+
+      // Extract dietary restrictions (NOT ingredients)
       // Dietary restrictions are critical filters (health/safety/ethics)
       // Ingredients are context, not filters (too restrictive)
       const restrictions = this.sharedDataService.mealFormData.dietaryRestrictions;
@@ -138,6 +144,16 @@ export class MealTakeoutComponent implements OnInit {
       return this.sharedDataService.mealFormData.ingredients;
     }
     return '';
+  }
+
+  getCuisinePreferencesDisplay(): string[] {
+    if (
+      this.sharedDataService.mealFormData &&
+      this.sharedDataService.mealFormData.cuisinePreferences
+    ) {
+      return this.sharedDataService.mealFormData.cuisinePreferences;
+    }
+    return [];
   }
 
   getDietaryRestrictionsDisplay(): string[] {
