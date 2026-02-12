@@ -108,7 +108,6 @@ export class LLMGROQService {
       const jsonString = jsonMatch ? jsonMatch[0] : content;
       return JSON.parse(jsonString) as MealSuggestion;
     } catch (e) {
-      console.error('Failed to parse JSON response:', e);
       // Return a fallback object with the raw content
       return {
         name: 'Parsing Error',
@@ -137,7 +136,6 @@ export class LLMGROQService {
       errorMessage = 'Groq service is currently unavailable. Please try again later.';
     }
 
-    console.error('API Error:', error);
     return throwError(() => new Error(errorMessage));
   }
 }

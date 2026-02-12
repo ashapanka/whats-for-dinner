@@ -93,11 +93,6 @@ export class MealFormComponent {
       }
       otherRestrictionControl?.updateValueAndValidity();
     });
-
-    //for testing
-    this.mealForm.valueChanges.subscribe((value) => {
-      console.log(value);
-    });
   }
 
   // Accessibility helper methods
@@ -258,7 +253,5 @@ Please return your response in the following JSON format:
 
     // Store the prompt in the shared service
     this.sharedDataService.mealPrompt = prompt;
-
-    console.log('Created prompt:', prompt);
   }
 }

@@ -77,29 +77,16 @@ export class MealTakeoutComponent {
         // Extract preferences from form data
         const preferences = this.extractPreferences();
 
-        console.log('Searching at coordinates:', { latitude, longitude, preferences });
-
         this.restaurantService
           .findNearbyRestaurants(latitude, longitude, 5000, preferences)
           .subscribe({
             next: (response) => {
-              console.log('Restaurant search response:', response);
               this.isLoading = false;
               this.restaurants = response.restaurants;
-              console.log('Found restaurants:', this.restaurants);
-
-              // Log if no results to help debug
-              if (this.restaurants.length === 0) {
-                console.warn('No restaurants found. This could mean:');
-                console.warn('1. No restaurants in 5km radius');
-                console.warn('2. Overpass API returned no data');
-                console.warn('3. All restaurants were filtered out by preferences:', preferences);
-              }
             },
             error: (error) => {
               this.isLoading = false;
               this.errorMessage = 'Failed to find restaurants. Please try again.';
-              console.error('Restaurant search error:', error);
             },
           });
       },
@@ -108,7 +95,6 @@ export class MealTakeoutComponent {
         this.showManualLocationInput = true;
         this.errorMessage =
           'We need your location to find nearby restaurants. Please enter your location manually or enable location permissions.';
-        console.error('Geolocation error:', error);
       },
     });
   }
@@ -230,7 +216,6 @@ export class MealTakeoutComponent {
           this.isLoading = false;
           this.errorMessage =
             'Failed to find restaurants at that location. Please try a different location.';
-          console.error('Location search error:', error);
         },
       });
     }

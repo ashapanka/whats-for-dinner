@@ -63,7 +63,6 @@ export class MealResultComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         this.suggestion = response;
-        console.log('Received suggestion:', response);
       },
       error: (err) => {
         this.isLoading = false;
