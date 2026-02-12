@@ -10,6 +10,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+/**
+ * Component for displaying meal suggestions based on user input.
+ */
 @Component({
   selector: 'app-meal-result',
   standalone: true,
@@ -28,6 +31,9 @@ export class MealResultComponent implements OnInit {
     public sharedDataService: SharedDataService,
   ) {}
 
+  /**
+   * Initializes the component by fetching meal suggestions based on the prompt from the shared data service.
+   */
   ngOnInit() {
     // Check if we have a prompt from the form
     if (this.sharedDataService.mealPrompt) {
@@ -38,6 +44,10 @@ export class MealResultComponent implements OnInit {
     }
   }
 
+  /**
+   * Fetches meal suggestions from the LLM service based on the provided prompt.
+   * @param prompt The user's meal request prompt
+   */
   getSuggestions(prompt: string) {
     this.isLoading = true;
     this.errorMessage = null;
@@ -56,9 +66,10 @@ export class MealResultComponent implements OnInit {
     });
   }
 
+  /**
+   * Navigates back to the meal form.
+   */
   backToForm() {
     this.router.navigate(['/meal-form']);
   }
-
-  
 }
