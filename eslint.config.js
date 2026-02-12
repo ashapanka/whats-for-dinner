@@ -1,5 +1,6 @@
 import angular from '@angular-eslint/eslint-plugin';
 import angularTemplate from '@angular-eslint/eslint-plugin-template';
+import tsParser from '@typescript-eslint/parser';
 import jsdoc from 'eslint-plugin-jsdoc';
 import { fileURLToPath } from 'node:url';
 import { dirname } from 'node:path';
@@ -11,6 +12,7 @@ export default [
   {
     files: ['**/*.ts'],
     languageOptions: {
+      parser: tsParser,
       parserOptions: {
         project: true,
         tsconfigRootDir: __dirname,
@@ -50,11 +52,33 @@ export default [
   },
   {
     files: ['**/*.html'],
+    languageOptions: {
+      parser: angularTemplate.parser,
+    },
     plugins: {
       '@angular-eslint/template': angularTemplate,
     },
     rules: {
       '@angular-eslint/template/no-negated-async': 'error',
     },
+  },
+  {
+    // Disable JSDoc rules for test files
+    files: ['**/*.spec.ts'],
+    rules: {
+      'jsdoc/require-jsdoc': 'off',
+      'jsdoc/require-param': 'off',
+      'jsdoc/require-returns': 'off',
+    },
+  },
+  {
+    ignores: [
+      'node_modules/**',
+      'dist/**',
+      '.angular/**',
+      'coverage/**',
+      '**/*.html',
+      'src/index.html',
+    ],
   },
 ];
