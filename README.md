@@ -272,24 +272,13 @@ npm run build
 
 Build artifacts will be stored in the `dist/` directory.
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 ## 📄 License
 
 This project is open source and available under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-Built with ❤️ by [Your Name]
-
-## 🙏 Acknowledgments
-
-- [Groq](https://groq.com/) for providing the LLM API
-- [OpenStreetMap](https://www.openstreetmap.org/) for restaurant data via Overpass API
-- [Angular](https://angular.dev/) for the amazing framework
-- [FastAPI](https://fastapi.tiangolo.com/) for the excellent Python framework
+Built with ❤️ by Allison Shapanka Ash
 
 ---
 
