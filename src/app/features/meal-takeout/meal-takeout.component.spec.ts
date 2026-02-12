@@ -180,7 +180,32 @@ describe('MealTakeoutComponent', () => {
   });
 
   // Error handling
-  it('should display error message when API fails', () => {});
+  it('should display error message when API fails', () => {
+    // Arrange
+    const mockPosition = {
+      coords: {
+        latitude: 40.7128,
+        longitude: -74.006,
+      },
+      timestamp: Date.now(),
+    } as GeolocationPosition;
+
+    geolocationService.getCurrentPosition.and.returnValue(of(mockPosition));
+    restaurantService.findNearbyRestaurants.and.returnValue(
+      throwError(() => new Error('API Error')),
+    );
+
+    fixture.detectChanges();
+
+    // Act
+    const findButton = fixture.nativeElement.querySelector('.find-restaurants-button');
+    findButton.click();
+    fixture.detectChanges();
+
+    // Assert
+    expect(component.isLoading).toBeFalse();
+    expect(component.errorMessage).toBe('Failed to find restaurants. Please try again.');
+  });
 
   it('should show loading spinner with location permission message when finding restaurants', () => {
     fixture.detectChanges();
