@@ -204,10 +204,18 @@ export class MealFormComponent {
     // Build dietary restrictions string
     let dietaryRestrictions = '';
     if (formData.dietaryRestrictions) {
-      if (formData.dietaryRestrictions.glutenFree) dietaryRestrictions += 'gluten-free, ';
-      if (formData.dietaryRestrictions.dairyFree) dietaryRestrictions += 'dairy-free, ';
-      if (formData.dietaryRestrictions.vegetarian) dietaryRestrictions += 'vegetarian, ';
-      if (formData.dietaryRestrictions.peanutAllergy) dietaryRestrictions += 'no peanuts, ';
+      if (formData.dietaryRestrictions.glutenFree) {
+        dietaryRestrictions += 'gluten-free, ';
+      }
+      if (formData.dietaryRestrictions.dairyFree) {
+        dietaryRestrictions += 'dairy-free, ';
+      }
+      if (formData.dietaryRestrictions.vegetarian) {
+        dietaryRestrictions += 'vegetarian, ';
+      }
+      if (formData.dietaryRestrictions.peanutAllergy) {
+        dietaryRestrictions += 'no peanuts, ';
+      }
       if (
         formData.dietaryRestrictions.other &&
         formData.dietaryRestrictions.otherRestriction.trim()

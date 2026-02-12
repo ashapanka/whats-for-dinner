@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,9 @@ import { SharedDataService } from '../../core/services/shared-data.service';
 import { GeolocationService } from '../../core/services/geolocation.service';
 import { RestaurantService, Restaurant } from '../../core/services/restaurant.service';
 
+/**
+ * Component for finding nearby restaurants based on meal preferences.
+ */
 @Component({
   selector: 'app-meal-takeout',
   standalone: true,
@@ -25,7 +28,7 @@ import { RestaurantService, Restaurant } from '../../core/services/restaurant.se
   templateUrl: './meal-takeout.component.html',
   styleUrl: './meal-takeout.component.scss',
 })
-export class MealTakeoutComponent implements OnInit {
+export class MealTakeoutComponent {
   isLoading = false;
   loadingMessage = '';
   errorMessage: string | null = null;
@@ -35,6 +38,14 @@ export class MealTakeoutComponent implements OnInit {
   locationForm: FormGroup;
   hasSearched = false; // Track if user has performed a search
 
+  /**
+   * Constructor for MealTakeoutComponent.
+   * @param router The router service.
+   * @param formBuilder The form builder service.
+   * @param geolocationService The geolocation service.
+   * @param restaurantService The restaurant service.
+   * @param sharedDataService The shared data service.
+   */
   constructor(
     private router: Router,
     private formBuilder: FormBuilder,
@@ -47,10 +58,9 @@ export class MealTakeoutComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    // Component initialized, waiting for user action
-  }
-
+  /**
+   * Finds nearby restaurants based on the user's current location.
+   */
   findNearbyRestaurants() {
     this.isLoading = true;
     this.loadingMessage = 'Requesting location permission...';
@@ -103,6 +113,10 @@ export class MealTakeoutComponent implements OnInit {
     });
   }
 
+  /**
+   * Extracts preferences from the meal form data.
+   * @returns An array of preferences.
+   */
   private extractPreferences(): string[] {
     const preferences: string[] = [];
 
@@ -139,6 +153,10 @@ export class MealTakeoutComponent implements OnInit {
     return preferences;
   }
 
+  /**
+   * Returns the ingredients from the meal form data.
+   * @returns A string of ingredients.
+   */
   getIngredientsDisplay(): string {
     if (this.sharedDataService.mealFormData && this.sharedDataService.mealFormData.ingredients) {
       return this.sharedDataService.mealFormData.ingredients;
@@ -146,6 +164,10 @@ export class MealTakeoutComponent implements OnInit {
     return '';
   }
 
+  /**
+   * Returns the cuisine preferences from the meal form data.
+   * @returns An array of cuisine preferences.
+   */
   getCuisinePreferencesDisplay(): string[] {
     if (
       this.sharedDataService.mealFormData &&
@@ -156,6 +178,10 @@ export class MealTakeoutComponent implements OnInit {
     return [];
   }
 
+  /**
+   * Returns the dietary restrictions from the meal form data.
+   * @returns An array of dietary restrictions.
+   */
   getDietaryRestrictionsDisplay(): string[] {
     const restrictions: string[] = [];
 
@@ -183,6 +209,9 @@ export class MealTakeoutComponent implements OnInit {
     return restrictions;
   }
 
+  /**
+   * Searches for restaurants by manual location input.
+   */
   searchByManualLocation() {
     if (this.locationForm.valid) {
       this.isLoading = true;

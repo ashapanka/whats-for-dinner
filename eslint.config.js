@@ -40,7 +40,7 @@ export default [
             FunctionDeclaration: true,
             MethodDefinition: true,
             ClassDeclaration: true,
-            ArrowFunctionExpression: true,
+            ArrowFunctionExpression: false, // Don't require JSDoc for arrow functions (callbacks, etc.)
           },
         },
       ],
