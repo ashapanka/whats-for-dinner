@@ -26,13 +26,12 @@ export interface RestaurantSearchResponse {
   total_results: number;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-
 /**
  * Service for searching nearby restaurants using FastAPI backend
  */
+@Injectable({
+  providedIn: 'root',
+})
 export class RestaurantService {
   // Backend API URL for restaurant search
   private readonly apiUrl = environment.backendApiUrl;

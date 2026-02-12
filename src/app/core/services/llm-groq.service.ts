@@ -21,7 +21,7 @@ export class LLMGROQService {
   private readonly systemPrompt =
     'You are a helpful dinner assistant for busy parents. Always respond with valid JSON.';
 
-    /**
+  /**
    * Creates an instance of LLMGROQService.
    * @param http The Angular HttpClient for making HTTP requests
    */
@@ -31,6 +31,9 @@ export class LLMGROQService {
    * Get meal suggestions based on user prompt
    * @param prompt User's meal request prompt
    * @param options Optional configuration for the request
+   * @param options.temperature Temperature setting for response randomness (0-2, default 0.7)
+   * @param options.maxTokens Maximum tokens in the response (default 1000)
+   * @param options.systemPrompt Custom system prompt to override default
    * @returns Observable of MealSuggestion
    */
   getMealSuggestions(
@@ -65,6 +68,9 @@ export class LLMGROQService {
    * Create request body for Groq API
    * @param prompt User's meal request prompt
    * @param options Optional configuration for the request
+   * @param options.temperature Temperature setting for response randomness (0-2, default 0.7)
+   * @param options.maxTokens Maximum tokens in the response (default 1000)
+   * @param options.systemPrompt Custom system prompt to override default
    * @returns GroqRequestOptions
    */
   private createRequestBody(
