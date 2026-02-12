@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+/**
+ * Root component for the application.
+ */
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],

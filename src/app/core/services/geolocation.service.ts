@@ -1,10 +1,17 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
+/**
+ * Service for getting the current position of the user
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class GeolocationService {
+  /**
+   * Get the current position of the user
+   * @returns Observable of GeolocationPosition
+   */
   getCurrentPosition(): Observable<GeolocationPosition> {
     return new Observable((observer) => {
       if (!navigator.geolocation) {

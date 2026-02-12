@@ -21,6 +21,10 @@ export class LLMGROQService {
   private readonly systemPrompt =
     'You are a helpful dinner assistant for busy parents. Always respond with valid JSON.';
 
+    /**
+   * Creates an instance of LLMGROQService.
+   * @param http The Angular HttpClient for making HTTP requests
+   */
   constructor(private http: HttpClient) {}
 
   /**
@@ -48,6 +52,7 @@ export class LLMGROQService {
 
   /**
    * Create authentication headers for Groq API
+   * @returns HttpHeaders with authorization and content type
    */
   private getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
@@ -58,6 +63,9 @@ export class LLMGROQService {
 
   /**
    * Create request body for Groq API
+   * @param prompt User's meal request prompt
+   * @param options Optional configuration for the request
+   * @returns GroqRequestOptions
    */
   private createRequestBody(
     prompt: string,
@@ -83,6 +91,8 @@ export class LLMGROQService {
 
   /**
    * Parse LLM response into MealSuggestion
+   * @param res LlmResponse from Groq API
+   * @returns MealSuggestion
    */
   private parseResponse(res: LlmResponse): MealSuggestion {
     const content = res.choices?.[0]?.message?.content ?? '{}';
@@ -107,6 +117,8 @@ export class LLMGROQService {
 
   /**
    * Handle HTTP errors from Groq API
+   * @param error HttpErrorResponse from Groq API
+   * @returns Observable of Error
    */
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Failed to get meal suggestions. Please try again.';

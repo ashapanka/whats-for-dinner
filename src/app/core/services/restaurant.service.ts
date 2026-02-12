@@ -29,14 +29,29 @@ export interface RestaurantSearchResponse {
 @Injectable({
   providedIn: 'root',
 })
+
+/**
+ * Service for searching nearby restaurants using FastAPI backend
+ */
 export class RestaurantService {
+  // Backend API URL for restaurant search
   private readonly apiUrl = environment.backendApiUrl;
 
+  /**
+   * Creates an instance of RestaurantService.
+   * @param http The Angular HttpClient for making HTTP requests
+   */
   constructor(private http: HttpClient) {}
 
   /**
    * Find nearby restaurants based on coordinates
    * Uses POST request to send data in request body
+   *
+   * @param latitude Latitude coordinate
+   * @param longitude Longitude coordinate
+   * @param radius Search radius in meters
+   * @param preferences List of cuisine preferences to filter by
+   * @returns Observable of restaurant search response
    */
   findNearbyRestaurants(
     latitude: number,
@@ -57,6 +72,11 @@ export class RestaurantService {
   /**
    * Search restaurants by location string (requires geocoding on backend)
    * Uses POST request to send data in request body
+   *
+   * @param location Location string (e.g. "New York, NY")
+   * @param radius Search radius in meters
+   * @param preferences List of cuisine preferences to filter by
+   * @returns Observable of restaurant search response
    */
   searchRestaurantsByLocation(
     location: string,

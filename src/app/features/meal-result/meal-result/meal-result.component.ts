@@ -25,6 +25,12 @@ export class MealResultComponent implements OnInit {
   errorMessage: string | null = null;
   suggestion: MealSuggestion | null = null;
 
+  /**
+   * Creates an instance of MealResultComponent.
+   * @param router The Angular router for navigation
+   * @param llmGroqService The service for interacting with the LLM API
+   * @param sharedDataService The service for sharing data between components
+   */
   constructor(
     private router: Router,
     public llmGroqService: LLMGROQService,

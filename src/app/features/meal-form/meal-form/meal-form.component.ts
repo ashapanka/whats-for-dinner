@@ -14,6 +14,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { SharedDataService } from '../../../core/services/shared-data.service';
 
+/**
+ * Component for collecting meal preferences and navigating to the appropriate result page.
+ */
 @Component({
   selector: 'app-meal-form',
   standalone: true,
@@ -51,6 +54,12 @@ export class MealFormComponent {
     'Mediterranean',
   ];
 
+  /**
+   * Creates an instance of MealFormComponent.
+   * @param router The Angular router for navigation
+   * @param fb The Angular form builder for creating the form
+   * @param sharedDataService The service for sharing data between components
+   */
   constructor(
     private router: Router,
     private fb: FormBuilder,
