@@ -83,10 +83,22 @@ export class MealTakeoutComponent {
             next: (response) => {
               this.isLoading = false;
               this.restaurants = response.restaurants;
+              console.log('Restaurant search successful:', response);
             },
             error: (error) => {
               this.isLoading = false;
-              this.errorMessage = 'Failed to find restaurants. Please try again.';
+              console.error('Restaurant search error:', error);
+
+              // Provide more specific error messages
+              if (error.status === 0) {
+                this.errorMessage =
+                  'Cannot connect to the backend server. Please make sure the backend is running on http://localhost:8000';
+              } else if (error.status === 500) {
+                this.errorMessage =
+                  'Server error. The backend may be having trouble connecting to the restaurant API.';
+              } else {
+                this.errorMessage = `Failed to find restaurants: ${error.message || 'Please try again.'}`;
+              }
             },
           });
       },

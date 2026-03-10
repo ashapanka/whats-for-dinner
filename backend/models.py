@@ -1,8 +1,9 @@
 """
 Pydantic models for API request/response validation.
 """
-from pydantic import BaseModel, Field
 from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class RestaurantSearchRequest(BaseModel):
@@ -67,4 +68,3 @@ class RestaurantSearchResponse(BaseModel):
         default=0,
         description="Total number of results found"
     )
-

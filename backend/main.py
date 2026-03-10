@@ -101,5 +101,4 @@ async def search_restaurants(request: RestaurantSearchRequest):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"An unexpected error occurred: {str(e)}"
-        )
-
+        ) from e

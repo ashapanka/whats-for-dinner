@@ -142,7 +142,7 @@ class RestaurantService:
             if "name" not in tags:
                 continue
 
-            # Extract restaurant data
+            # Extract restaurant data (only fields that match the Restaurant model)
             restaurant = {
                 "name": tags.get("name", "Unknown"),
                 "place_id": f"osm_{element.get('type')}_{element.get('id')}",
@@ -152,14 +152,19 @@ class RestaurantService:
                 "user_ratings_total": None,
                 "price_level": None,
                 "opening_hours": tags.get("opening_hours"),
-                "cuisine": tags.get("cuisine", "").split(";") if tags.get("cuisine") else [],
-                "phone": tags.get("phone"),
-                "website": tags.get("website"),
             }
+
+            # Store cuisine for preference matching (not in the model, just for filtering)
+            cuisine = tags.get("cuisine", "").split(";") if tags.get("cuisine") else []
+            restaurant["_cuisine"] = cuisine  # Temporary field for filtering
 
             # Filter by preferences if provided
             if preferences and not self._matches_preferences(restaurant, preferences):
                 continue
+
+            # Remove temporary fields before adding to results
+            if "_cuisine" in restaurant:
+                del restaurant["_cuisine"]
 
             restaurants.append(restaurant)
 
@@ -210,8 +215,8 @@ class RestaurantService:
         # Normalize preferences to lowercase
         normalized_prefs = [p.lower() for p in preferences]
 
-        # Check cuisine
-        cuisines = [c.lower() for c in restaurant.get("cuisine", [])]
+        # Check cuisine (using temporary _cuisine field)
+        cuisines = [c.lower() for c in restaurant.get("_cuisine", [])]
         for pref in normalized_prefs:
             if any(pref in cuisine for cuisine in cuisines):
                 return True

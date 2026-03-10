@@ -204,7 +204,7 @@ describe('MealTakeoutComponent', () => {
 
     // Assert
     expect(component.isLoading).toBeFalse();
-    expect(component.errorMessage).toBe('Failed to find restaurants. Please try again.');
+    expect(component.errorMessage).toBe('Failed to find restaurants: API Error');
   });
 
   it('should show loading spinner with location permission message when finding restaurants', () => {
