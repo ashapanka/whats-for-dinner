@@ -55,3 +55,6 @@ backend/.venv/
 backend/venv/
 *.egg-info/
 .pytest_cache/
+
+# Presentation guide
+PRESENTATION_GUIDE.md
