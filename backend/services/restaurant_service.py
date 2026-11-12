@@ -10,10 +10,13 @@ from typing import Optional
 class RestaurantService:
     """Service for searching restaurants using Overpass API."""
 
+    USER_AGENT = "whats-for-dinner/0.1"
+
     # List of public Overpass API servers (fallback options)
     OVERPASS_SERVERS = [
         "https://overpass.kumi.systems/api/interpreter",  # Fast, reliable 
         "https://overpass-api.de/api/interpreter",  # Original official server 
+        "https://overpass.osm.ch/api/interpreter",
     ]
 
     def __init__(self, overpass_url: str = None):
@@ -62,7 +65,10 @@ class RestaurantService:
 
         for server_url in servers_to_try:
             try:
-                async with httpx.AsyncClient(timeout=self.timeout) as client:
+                async with httpx.AsyncClient(
+                    timeout=self.timeout,
+                    headers={"User-Agent": self.USER_AGENT},
+                ) as client:
                     response = await client.post(
                         server_url,
                         data={"data": query}
@@ -86,8 +92,8 @@ class RestaurantService:
                 # Try next server
                 continue
             except httpx.HTTPStatusError as e:
-                if e.response.status_code in [429, 504, 503]:
-                    # Rate limit or server overload - try next server
+                if e.response.status_code in [406, 429, 502, 503, 504]:
+                    # The endpoint rejected the request or is temporarily unavailable.
                     last_error = f"Server {server_url} unavailable: {e.response.status_code}"
                     continue
                 else:

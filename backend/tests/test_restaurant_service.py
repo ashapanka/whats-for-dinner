@@ -8,12 +8,70 @@ Run all unit tests:
 Run a specific unit test:
     pytest tests/test_restaurant_service.py::test_parse_restaurants_max_results -v
 """
+from unittest.mock import AsyncMock, Mock
+
 import pytest
+import httpx
 from services.restaurant_service import RestaurantService
 
 
 class TestRestaurantService:
     """Unit tests for RestaurantService."""
+
+    @pytest.mark.asyncio
+    async def test_search_identifies_client_to_overpass(self, mocker):
+        response = Mock()
+        response.json.return_value = {"elements": []}
+        client = mocker.MagicMock()
+        client.__aenter__.return_value = client
+        client.post = AsyncMock(return_value=response)
+        async_client = mocker.patch(
+            "services.restaurant_service.httpx.AsyncClient",
+            return_value=client,
+        )
+
+        service = RestaurantService()
+        await service.search_nearby_restaurants(40.758, -73.9855)
+
+        assert async_client.call_args.kwargs["headers"] == {
+            "User-Agent": RestaurantService.USER_AGENT
+        }
+
+    @pytest.mark.asyncio
+    async def test_search_fails_over_after_gateway_error(self, mocker):
+        first_url = "https://first.example/api/interpreter"
+        second_url = "https://second.example/api/interpreter"
+        service = RestaurantService(overpass_url=first_url)
+        service.OVERPASS_SERVERS = [first_url, second_url]
+
+        first_response = Mock()
+        first_response.raise_for_status.side_effect = httpx.HTTPStatusError(
+            "Bad Gateway",
+            request=Mock(),
+            response=Mock(status_code=502),
+        )
+        second_response = Mock()
+        second_response.json.return_value = {"elements": []}
+
+        clients = []
+        for response in (first_response, second_response):
+            client = mocker.MagicMock()
+            client.__aenter__.return_value = client
+            client.post = AsyncMock(return_value=response)
+            clients.append(client)
+
+        mocker.patch(
+            "services.restaurant_service.httpx.AsyncClient",
+            side_effect=clients,
+        )
+
+        result = await service.search_nearby_restaurants(40.758, -73.9855)
+
+        assert result["status"] == "ZERO_RESULTS"
+        assert [client.post.await_args.args[0] for client in clients] == [
+            first_url,
+            second_url,
+        ]
 
     def test_parse_restaurants_max_results_default(self):
         """Test that _parse_restaurants returns maximum 10 results by default."""
